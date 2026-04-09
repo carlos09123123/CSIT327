@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Adoption Applications</h1>
+    <a href="{% url 'application_add' %}" class="btn btn-primary">Add Application</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Adopter</th>
+                <th>Pet</th>
+                <th>Status</th>
+                <th>Application Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for application in applications %}
+            <tr>
+                <td>{{ application.adopter }}</td>
+                <td>{{ application.pet }}</td>
+                <td>{{ application.status }}</td>
+                <td>{{ application.application_date }}</td>
+                <td>
+                    <a href="{% url 'application_edit' application.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{% url 'application_delete' application.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Intake Records</h1>
+    <a href="{% url 'intake_add' %}" class="btn btn-primary">Add Intake</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Pet</th>
+                <th>Shelter</th>
+                <th>Type</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for intake in intakes %}
+            <tr>
+                <td>{{ intake.pet }}</td>
+                <td>{{ intake.shelter }}</td>
+                <td>{{ intake.intake_type }}</td>
+                <td>{{ intake.intake_date }}</td>
+                <td>
+                    <a href="{% url 'intake_edit' intake.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{% url 'intake_delete' intake.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

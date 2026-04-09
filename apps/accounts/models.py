@@ -13,7 +13,7 @@ class Staff(AbstractUser):
     phone = models.CharField(max_length=20)
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=100, unique=True)
-    password_hash = models.CharField(max_length=255)  # Django handles this automatically
+    password_hash = models.CharField(max_length=255)
     status = models.BooleanField(default=True)
 
     USERNAME_FIELD = 'username'
