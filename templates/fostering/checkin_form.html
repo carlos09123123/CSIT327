@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>{{ title }}</h1>
+    <p><strong>Assignment:</strong> {{ assignment.pet.name }} with {{ assignment.foster.first_name }} {{ assignment.foster.last_name }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="{{ form.checkin_date.id_for_label }}" class="form-label">Check-in Date</label>
+            {{ form.checkin_date }}
+            {% if form.checkin_date.errors %}
+                <div class="text-danger">{{ form.checkin_date.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.pet_condition.id_for_label }}" class="form-label">Pet Condition</label>
+            {{ form.pet_condition }}
+            {% if form.pet_condition.errors %}
+                <div class="text-danger">{{ form.pet_condition.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.foster_feedback.id_for_label }}" class="form-label">Foster Feedback</label>
+            {{ form.foster_feedback }}
+            {% if form.foster_feedback.errors %}
+                <div class="text-danger">{{ form.foster_feedback.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.issues.id_for_label }}" class="form-label">Issues/Concerns</label>
+            {{ form.issues }}
+            {% if form.issues.errors %}
+                <div class="text-danger">{{ form.issues.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.next_checkin_date.id_for_label }}" class="form-label">Next Check-in Date (Optional)</label>
+            {{ form.next_checkin_date }}
+            {% if form.next_checkin_date.errors %}
+                <div class="text-danger">{{ form.next_checkin_date.errors }}</div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Check-in</button>
+        <a href="{% url 'assignment_detail' assignment.assignment_id %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
