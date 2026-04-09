@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3>{% if pet %}Edit Pet{% else %}Add New Pet{% endif %}</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Name *</label>
+                                <input type="text" name="name" class="form-control" value="{{ pet.name|default:'' }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Species *</label>
+                                <select name="species" class="form-select" required>
+                                    {% for value, label in species_choices %}
+                                    <option value="{{ value }}" {% if pet.species == value %}selected{% endif %}>{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Breed</label>
+                                <input type="text" name="breed" class="form-control" value="{{ pet.breed|default:'' }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Age (months) *</label>
+                                <input type="number" name="age" class="form-control" value="{{ pet.age|default:'' }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Sex *</label>
+                                <select name="sex" class="form-select" required>
+                                    {% for value, label in sex_choices %}
+                                    <option value="{{ value }}" {% if pet.sex == value %}selected{% endif %}>{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Size *</label>
+                                <select name="size" class="form-select" required>
+                                    {% for value, label in size_choices %}
+                                    <option value="{{ value }}" {% if pet.size == value %}selected{% endif %}>{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Color *</label>
+                                <input type="text" name="color" class="form-control" value="{{ pet.color|default:'' }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Status *</label>
+                                <select name="status" class="form-select" required>
+                                    {% for value, label in status_choices %}
+                                    <option value="{{ value }}" {% if pet.status == value %}selected{% endif %}>{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" name="vaccination_status" class="form-check-input" {% if pet.vaccination_status %}checked{% endif %}>
+                                    <label class="form-check-label">Vaccinated</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" name="spay_neuter_status" class="form-check-input" {% if pet.spay_neuter_status %}checked{% endif %}>
+                                    <label class="form-check-label">Spayed/Neutered</label>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Medical Notes</label>
+                                <textarea name="medical_notes" class="form-control" rows="3">{{ pet.medical_notes|default:'' }}</textarea>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <a href="{% url 'pet_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Save Pet</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>🏥 Veterinarians</h1>
+        <a href="{% url 'vet_add' %}" class="btn btn-success">+ Add Veterinarian</a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Clinic</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>License No.</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for vet in vets %}
+                        <tr>
+                            <td>{{ vet.full_name }}</td>
+                            <td>{{ vet.clinic_name }}</td>
+                            <td>{{ vet.phone }}</td>
+                            <td>{{ vet.email }}</td>
+                            <td>{{ vet.license_no }}</td>
+                            <td>
+                                <a href="{% url 'vet_delete' vet.vet_id %}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this vet?')">Delete</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">No veterinarians found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

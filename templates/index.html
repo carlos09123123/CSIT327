@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 text-center">
+        <h1 class="display-4">Welcome to Shelter Management System</h1>
+        <p class="lead">Animal Shelter Management System</p>
+        <hr class="my-4">
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">🐕 Animals</h5>
+                <p class="card-text">Manage pets, medical records, and vaccinations</p>
+                <a href="/animals/" class="btn btn-primary">Go to Animals</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">🏠 Shelter</h5>
+                <p class="card-text">Manage shelter branches, kennels, and intake records</p>
+                <a href="/shelter/" class="btn btn-primary">Go to Shelter</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">❤️ Fostering</h5>
+                <p class="card-text">Manage foster assignments for pets</p>
+                <a href="/fostering/" class="btn btn-primary">Go to Fostering</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">📋 Adoptions</h5>
+                <p class="card-text">Manage adoption applications, home visits, and payments</p>
+                <a href="/adoptions/" class="btn btn-primary">Go to Adoptions</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">👥 Staff</h5>
+                <p class="card-text">Manage staff accounts and veterinary information</p>
+                <a href="/accounts/" class="btn btn-primary">Go to Staff</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
