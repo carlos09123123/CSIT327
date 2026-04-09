@@ -1,5 +1,7 @@
 🐾 Animal Shelter Adoption & Rescue System
+
 📋 Project Overview
+
 The Animal Shelter Adoption & Rescue System is a comprehensive web-based platform designed to manage an animal shelter's daily operations. The system helps track pets, adopters, staff members, medical records, foster assignments, and adoption processes, ensuring that animals are properly cared for and placed in loving homes safely.
 
 
