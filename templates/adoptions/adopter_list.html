@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Adopters</h1>
+    <a href="{% url 'adopter_add' %}" class="btn btn-primary">Add Adopter</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for adopter in adopters %}
+            <tr>
+                <td>{{ adopter.first_name }} {{ adopter.last_name }}</td>
+                <td>{{ adopter.email }}</td>
+                <td>{{ adopter.phone }}</td>
+                <td>
+                    <a href="{% url 'adopter_edit' adopter.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{% url 'adopter_delete' adopter.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

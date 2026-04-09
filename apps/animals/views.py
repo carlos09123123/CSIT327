@@ -113,7 +113,7 @@ def medical_add(request, pet_id):
     if request.method == 'POST':
         MedicalRecord.objects.create(
             pet=pet,
-            vet_id=request.POST.get('vet_id') or None,
+            vet=request.POST.get('vet_id') and Veterinary.objects.get(pk=request.POST.get('vet_id')) or None,
             visit_date=request.POST['visit_date'],
             diagnosis=request.POST['diagnosis'],
             treatment=request.POST['treatment'],
@@ -143,7 +143,7 @@ def vaccination_add(request, pet_id):
     if request.method == 'POST':
         Vaccination.objects.create(
             pet=pet,
-            vet_id=request.POST.get('vet_id') or None,
+            vet=request.POST.get('vet_id') and Veterinary.objects.get(pk=request.POST.get('vet_id')) or None,
             vaccine_name=request.POST['vaccine_name'],
             dose_no=request.POST['dose_no'],
             vaccination_date=request.POST['vaccination_date'],

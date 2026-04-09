@@ -16,11 +16,11 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/animals/">Animals</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/shelter/">Shelter</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/fostering/">Fostering</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/adoptions/">Adoptions</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/accounts/">Staff</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'pet_list' %}">Animals</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'shelter_index' %}">Shelter</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'fostering_index' %}">Fostering</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'adoptions_index' %}">Adoptions</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'accounts_index' %}">Staff</a></li>
                     {% if user.is_authenticated %}
                         <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout ({{ user.username }})</a></li>
                     {% else %}

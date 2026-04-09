@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Kennels</h1>
+    <a href="{% url 'kennel_add' %}" class="btn btn-primary">Add Kennel</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Shelter</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for kennel in kennels %}
+            <tr>
+                <td>{{ kennel.kennel_code }}</td>
+                <td>{{ kennel.shelter }}</td>
+                <td>{{ kennel.type }}</td>
+                <td>{{ kennel.status }}</td>
+                <td>
+                    <a href="{% url 'kennel_edit' kennel.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{% url 'kennel_delete' kennel.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
