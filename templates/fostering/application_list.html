@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Foster Applications</h1>
+        <a href="{% url 'application_add' %}" class="btn btn-primary">Add New Application</a>
+    </div>
+
+    <!-- Status Filter -->
+    <div class="mb-3">
+        <form method="get" class="d-inline">
+            <label for="status" class="form-label me-2">Filter by Status:</label>
+            <select name="status" id="status" class="form-select d-inline w-auto" onchange="this.form.submit()">
+                <option value="">All Statuses</option>
+                {% for status_choice in status_choices %}
+                    <option value="{{ status_choice.0 }}" {% if status_choice.0 == current_status %}selected{% endif %}>{{ status_choice.1 }}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+
+    {% if applications %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Application ID</th>
+                        <th>Foster</th>
+                        <th>Status</th>
+                        <th>Application Date</th>
+                        <th>Staff</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for application in applications %}
+                        <tr>
+                            <td><a href="{% url 'application_detail' application.application_id %}">#{{ application.application_id }}</a></td>
+                            <td>{{ application.foster.first_name }} {{ application.foster.last_name }}</td>
+                            <td>
+                                <span class="badge bg-{% if application.status == 'Approved' %}success{% elif application.status == 'Rejected' %}danger{% elif application.status == 'Under Review' %}warning{% else %}secondary{% endif %}">
+                                    {{ application.get_status_display }}
+                                </span>
+                            </td>
+                            <td>{{ application.application_date }}</td>
+                            <td>{% if application.staff %}{{ application.staff.first_name }} {{ application.staff.last_name }}{% else %}Unassigned{% endif %}</td>
+                            <td>
+                                <a href="{% url 'application_detail' application.application_id %}" class="btn btn-sm btn-info">View</a>
+                                <a href="{% url 'application_edit' application.application_id %}" class="btn btn-sm btn-warning">Edit</a>
+                                <a href="{% url 'application_delete' application.application_id %}" class="btn btn-sm btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <h4>No applications found</h4>
+            <p>Get started by <a href="{% url 'application_add' %}">adding your first application</a>.</p>
+        </div>
+    {% endif %}
+
+    <div class="mt-4">
+        <a href="{% url 'fostering_index' %}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

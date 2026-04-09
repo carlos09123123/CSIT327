@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Application #{{ application.application_id }}</h1>
+        <a href="{% url 'application_edit' application.application_id %}" class="btn btn-warning">Edit</a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Foster Information</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Name:</strong> <a href="{% url 'foster_detail' application.foster.foster_id %}">{{ application.foster.first_name }} {{ application.foster.last_name }}</a></p>
+                    <p><strong>Email:</strong> {{ application.foster.email }}</p>
+                    <p><strong>Phone:</strong> {{ application.foster.phone }}</p>
+                    <p><strong>Address:</strong> {{ application.foster.address }}</p>
+                    <p><strong>Preferred Species:</strong> {{ application.foster.preferred_species|default:"Any" }}</p>
+                    <p><strong>Experience:</strong> {{ application.foster.experience_years }} years</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Application Details</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Application Date:</strong> {{ application.application_date }}</p>
+                    <p><strong>Status:</strong>
+                        <span class="badge bg-{% if application.status == 'Approved' %}success{% elif application.status == 'Rejected' %}danger{% elif application.status == 'Under Review' %}warning{% else %}secondary{% endif %}">
+                            {{ application.get_status_display }}
+                        </span>
+                    </p>
+                    {% if application.interview_schedule %}
+                        <p><strong>Interview Schedule:</strong> {{ application.interview_schedule }}</p>
+                    {% endif %}
+                    {% if application.staff %}
+                        <p><strong>Assigned Staff:</strong> {{ application.staff.first_name }} {{ application.staff.last_name }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if application.notes %}
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5>Application Notes</h5>
+            </div>
+            <div class="card-body">
+                <p>{{ application.notes }}</p>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="mt-4">
+        <a href="{% url 'application_list' %}" class="btn btn-secondary">Back to Applications</a>
+        <a href="{% url 'fostering_index' %}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

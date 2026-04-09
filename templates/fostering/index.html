@@ -2,10 +2,80 @@
 
 {% block content %}
 <div class="container">
-    <h1>Fostering Management</h1>
-    <p>This page will manage foster assignments for pets.</p>
-    <div class="alert alert-info">
-        <strong>Coming Soon!</strong> This feature is under development.
+    <h1>Fostering Management Dashboard</h1>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Active Assignments</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ active_assignments.count }} active foster assignments</p>
+                    <a href="{% url 'assignment_list' %}?status=Active" class="btn btn-primary">View All</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Pending Applications</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ pending_applications.count }} applications awaiting review</p>
+                    <a href="{% url 'application_list' %}?status=Pending" class="btn btn-warning">Review Applications</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'foster_add' %}" class="btn btn-success btn-sm">Add Foster</a>
+                    <a href="{% url 'assignment_add' %}" class="btn btn-info btn-sm">New Assignment</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Recent Check-ins</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_checkins %}
+                        <ul class="list-group list-group-flush">
+                            {% for checkin in recent_checkins %}
+                                <li class="list-group-item">
+                                    <strong>{{ checkin.assignment.pet.name }}</strong> with {{ checkin.assignment.foster.first_name }} {{ checkin.assignment.foster.last_name }}
+                                    <br><small class="text-muted">{{ checkin.checkin_date }}</small>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted">No recent check-ins</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Navigation</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a href="{% url 'foster_list' %}" class="list-group-item list-group-item-action">Manage Fosters</a>
+                        <a href="{% url 'application_list' %}" class="list-group-item list-group-item-action">Review Applications</a>
+                        <a href="{% url 'assignment_list' %}" class="list-group-item list-group-item-action">View Assignments</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
