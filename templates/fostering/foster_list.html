@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="fas fa-heart"></i> Foster Management</h1>
+        <a href="{% url 'foster_add' %}" class="btn btn-success">
+            <i class="fas fa-plus"></i> New Foster Assignment
+        </a>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <h5>Active Fosters</h5>
+                    <h2>{{ active_fosters|length }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-secondary text-white">
+                <div class="card-body text-center">
+                    <h5>Completed</h5>
+                    <h2>{{ completed_fosters|length }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-danger text-white">
+                <div class="card-body text-center">
+                    <h5>Cancelled</h5>
+                    <h2>{{ cancelled_fosters|length }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Fosters -->
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+            <h5><i class="fas fa-check-circle"></i> Active Foster Assignments</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Pet</th>
+                            <th>Foster Family</th>
+                            <th>Phone</th>
+                            <th>Address</th>
+                            <th>Start Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for foster in active_fosters %}
+                        <tr>
+                            <td>
+                                <strong>{{ foster.pet.name }}</strong><br>
+                                <small class="text-muted">{{ foster.pet.species }} | {{ foster.pet.breed|default:"Mixed" }}</small>
+                            </td>
+                            <td>{{ foster.foster_name }}</td>
+                            <td>{{ foster.foster_phone }}</td>
+                            <td>{{ foster.foster_address|truncatechars:30 }}</td>
+                            <td>{{ foster.start_date }}</td>
+                            <td><span class="badge bg-success">Active</span></td>
+                            <td>
+                                <a href="{% url 'foster_edit' foster.foster_id %}" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <a href="{% url 'foster_end' foster.foster_id %}" class="btn btn-sm btn-info" onclick="return confirm('Mark this foster as completed?')">
+                                    <i class="fas fa-check"></i> Complete
+                                </a>
+                                <a href="{% url 'foster_delete' foster.foster_id %}" class="btn btn-sm btn-danger" onclick="return confirm('Cancel this foster assignment?')">
+                                    <i class="fas fa-times"></i> Cancel
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i> No active foster assignments found.
+                                    <a href="{% url 'foster_add' %}">Create your first foster assignment</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Completed Fosters -->
+    <div class="card mb-4">
+        <div class="card-header bg-secondary text-white">
+            <h5><i class="fas fa-history"></i> Completed Foster Assignments</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Pet</th>
+                            <th>Foster Family</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for foster in completed_fosters %}
+                        <tr>
+                            <td><strong>{{ foster.pet.name }}</strong></td>
+                            <td>{{ foster.foster_name }}</td>
+                            <td>{{ foster.start_date }}</td>
+                            <td>{{ foster.end_date|default:"Present" }}</td>
+                            <td><span class="badge bg-secondary">Completed</span></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center">No completed foster assignments.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancelled Fosters -->
+    {% if cancelled_fosters %}
+    <div class="card">
+        <div class="card-header bg-danger text-white">
+            <h5><i class="fas fa-ban"></i> Cancelled Foster Assignments</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Pet</th>
+                            <th>Foster Family</th>
+                            <th>Start Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for foster in cancelled_fosters %}
+                        <tr>
+                            <td><strong>{{ foster.pet.name }}</strong></td>
+                            <td>{{ foster.foster_name }}</td>
+                            <td>{{ foster.start_date }}</td>
+                            <td><span class="badge bg-danger">Cancelled</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

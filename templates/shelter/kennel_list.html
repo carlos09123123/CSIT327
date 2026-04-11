@@ -2,32 +2,121 @@
 
 {% block content %}
 <div class="container">
-    <h1>Kennels</h1>
-    <a href="{% url 'kennel_add' %}" class="btn btn-primary">Add Kennel</a>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Code</th>
-                <th>Shelter</th>
-                <th>Type</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for kennel in kennels %}
-            <tr>
-                <td>{{ kennel.kennel_code }}</td>
-                <td>{{ kennel.shelter }}</td>
-                <td>{{ kennel.type }}</td>
-                <td>{{ kennel.status }}</td>
-                <td>
-                    <a href="{% url 'kennel_edit' kennel.pk %}" class="btn btn-sm btn-warning">Edit</a>
-                    <a href="{% url 'kennel_delete' kennel.pk %}" class="btn btn-sm btn-danger">Delete</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'shelter_list' %}">Shelter</a></li>
+            <li class="breadcrumb-item active">Kennel Management</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1><i class="fas fa-door-open"></i> Kennel & Cage Management</h1>
+            <p class="text-muted">Manage housing units for pets within shelter branches.</p>
+        </div>
+        <div>
+            <a href="{% url 'kennel_add' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add New Kennel
+            </a>
+            <a href="{% url 'shelter_list' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Branches
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter by Shelter -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Filter by Shelter Branch</label>
+                    <select name="shelter" class="form-select" onchange="this.form.submit()">
+                        <option value="">All Branches</option>
+                        {% for s in shelters %}
+                        <option value="{{ s.shelter_id }}" {% if selected_shelter and selected_shelter.shelter_id == s.shelter_id %}selected{% endif %}>
+                            {{ s.name }} ({{ s.city }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6 d-flex align-items-end">
+                    <a href="{% url 'kennel_list' %}" class="btn btn-secondary">Clear Filter</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Kennels Table -->
+    <div class="card">
+        <div class="card-header bg-dark text-white">
+            <h5><i class="fas fa-list"></i> KENNEL LIST</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Shelter</th>
+                            <th>Kennel Code</th>
+                            <th>Type</th>
+                            <th>Capacity</th>
+                            <th>Current Occupancy</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for kennel in kennels %}
+                        <tr>
+                            <td>{{ kennel.kennel_id }}</td>
+                            <td>{{ kennel.shelter.name }}<br>
+                                <small class="text-muted">{{ kennel.shelter.city }}</small>
+                            </td>
+                            <td><strong>{{ kennel.kennel_code }}</strong></td>
+                            <td>
+                                <span class="badge {% if kennel.type == 'Indoor' %}bg-info{% elif kennel.type == 'Outdoor' %}bg-success{% else %}bg-warning{% endif %}">
+                                    {{ kennel.type }}
+                                </span>
+                            </td>
+                            <td>{{ kennel.capacity }}</td>
+                            <td>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar {% if kennel.current_occupancy == kennel.capacity %}bg-danger{% elif kennel.current_occupancy > 0 %}bg-warning{% else %}bg-success{% endif %}"
+                                         style="width: {% widthratio kennel.current_occupancy kennel.capacity 100 %}%">
+                                        {{ kennel.current_occupancy }}/{{ kennel.capacity }}
+                                    </div>
+                                </div>
+                             </td>
+                            <td>
+                                <span class="badge {% if kennel.status == 'Available' %}bg-success{% elif kennel.status == 'Occupied' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                    {{ kennel.status }}
+                                </span>
+                             </td>
+                            <td>
+                                <a href="{% url 'kennel_edit' kennel.kennel_id %}" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <a href="{% url 'kennel_delete' kennel.kennel_id %}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this kennel?')">
+                                    <i class="fas fa-trash"></i> Delete
+                                </a>
+                             </td>
+                         </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i> No kennels found.
+                                    <a href="{% url 'kennel_add' %}">Add your first kennel</a>
+                                </div>
+                             </td>
+                         </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

@@ -4,17 +4,13 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>{{ pet.name }}</h1>
-        <div>
-            <a href="{% url 'pet_edit' pet.pet_id %}" class="btn btn-warning">Edit</a>
-            <a href="{% url 'pet_delete' pet.pet_id %}" class="btn btn-danger">Delete</a>
-            <a href="{% url 'pet_list' %}" class="btn btn-secondary">Back</a>
-        </div>
+        <a href="{% url 'pet_list' %}" class="btn btn-secondary">← Back to List</a>
     </div>
 
     <div class="row">
         <div class="col-md-6">
             <div class="card mb-4">
-                <div class="card-header">
+                <div class="card-header bg-primary text-white">
                     <h4>Pet Information</h4>
                 </div>
                 <div class="card-body">
@@ -33,96 +29,16 @@
         </div>
         <div class="col-md-6">
             <div class="card mb-4">
-                <div class="card-header">
+                <div class="card-header bg-info text-white">
                     <h4>Health Status</h4>
                 </div>
                 <div class="card-body">
                     <p><strong>Vaccinated:</strong> {% if pet.vaccination_status %}✅ Yes{% else %}❌ No{% endif %}</p>
                     <p><strong>Spayed/Neutered:</strong> {% if pet.spay_neuter_status %}✅ Yes{% else %}❌ No{% endif %}</p>
                     <p><strong>Medical Notes:</strong></p>
-                    <p class="border p-2 rounded">{{ pet.medical_notes|default:"No medical notes" }}</p>
+                    <p class="border p-2 rounded bg-light">{{ pet.medical_notes|default:"No medical notes" }}</p>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Medical Records Section -->
-    <div class="card mb-4">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h4>Medical Records</h4>
-            <a href="{% url 'medical_add' pet.pet_id %}" class="btn btn-sm btn-success">+ Add Medical Record</a>
-        </div>
-        <div class="card-body">
-            {% if medical_records %}
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Diagnosis</th>
-                            <th>Treatment</th>
-                            <th>Weight</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for record in medical_records %}
-                        <tr>
-                            <td>{{ record.visit_date }}</td>
-                            <td>{{ record.diagnosis|truncatechars:50 }}</td>
-                            <td>{{ record.treatment|truncatechars:50 }}</td>
-                            <td>{{ record.weight|default:"-" }} kg</td>
-                            <td>
-                                <a href="{% url 'medical_delete' record.medical_id %}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this record?')">Delete</a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% else %}
-            <p class="text-muted">No medical records found.</p>
-            {% endif %}
-        </div>
-    </div>
-
-    <!-- Vaccinations Section -->
-    <div class="card mb-4">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h4>Vaccinations</h4>
-            <a href="{% url 'vaccination_add' pet.pet_id %}" class="btn btn-sm btn-success">+ Add Vaccination</a>
-        </div>
-        <div class="card-body">
-            {% if vaccinations %}
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Vaccine</th>
-                            <th>Dose</th>
-                            <th>Date</th>
-                            <th>Next Due</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for vacc in vaccinations %}
-                        <tr>
-                            <td>{{ vacc.vaccine_name }}</td>
-                            <td>{{ vacc.dose_no }}</td>
-                            <td>{{ vacc.vaccination_date }}</td>
-                            <td>{{ vacc.next_due_date }}</td>
-                            <td>
-                                <a href="{% url 'vaccination_delete' vacc.vaccination_id %}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this vaccination?')">Delete</a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% else %}
-            <p class="text-muted">No vaccination records found.</p>
-            {% endif %}
         </div>
     </div>
 </div>

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3>Apply for Adoption: {{ pet.name }}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <strong>Pet Details:</strong><br>
+                        Species: {{ pet.species }}<br>
+                        Breed: {{ pet.breed|default:"Mixed" }}<br>
+                        Age: {{ pet.age }} months<br>
+                        Size: {{ pet.size }}<br>
+                        Color: {{ pet.color }}
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Additional Notes (Optional)</label>
+                            <textarea name="notes" class="form-control" rows="4"
+                                      placeholder="Tell us why you would like to adopt this pet..."></textarea>
+                        </div>
+                        <div class="alert alert-warning">
+                            <i class="fas fa-info-circle"></i>
+                            By submitting this application, you agree to the adoption terms and conditions.
+                            A staff member will review your application and contact you for an interview.
+                        </div>
+                        <div class="text-end">
+                            <a href="{% url 'adopter_dashboard' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Submit Application</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

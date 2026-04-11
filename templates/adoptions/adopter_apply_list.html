@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Available Pets for Adoption</h1>
+
+    <div class="row">
+        {% for pet in available_pets %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ pet.name }}</h5>
+                    <p class="card-text">
+                        <strong>Species:</strong> {{ pet.species }}<br>
+                        <strong>Breed:</strong> {{ pet.breed|default:"Mixed" }}<br>
+                        <strong>Age:</strong> {{ pet.age }} months<br>
+                        <strong>Size:</strong> {{ pet.size }}<br>
+                        <strong>Color:</strong> {{ pet.color }}
+                    </p>
+                    {% if pet.pet_id in applied_pet_ids %}
+                        <button class="btn btn-secondary w-100" disabled>
+                            <i class="fas fa-check"></i> Already Applied
+                        </button>
+                    {% else %}
+                        <a href="{% url 'adopter_apply' pet.pet_id %}" class="btn btn-primary w-100">
+                            <i class="fas fa-paw"></i> Apply for Adoption
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                No pets are currently available for adoption.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="text-center mt-3">
+        <a href="{% url 'adopter_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

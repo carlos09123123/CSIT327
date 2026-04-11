@@ -2,12 +2,78 @@
 
 {% block content %}
 <div class="container">
-    <h1>{% if form.instance.pk %}Edit{% else %}Add{% endif %} Kennel</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-success">Save</button>
-        <a href="{% url 'kennel_list' %}" class="btn btn-secondary">Cancel</a>
-    </form>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3>{% if kennel %}Edit Kennel{% else %}Add New Kennel{% endif %}</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label">Shelter Branch *</label>
+                            <select name="shelter_id" class="form-select" {% if kennel %}disabled{% else %}required{% endif %}>
+                                <option value="">-- Select Shelter --</option>
+                                {% for shelter in shelters %}
+                                <option value="{{ shelter.shelter_id }}" {% if kennel and kennel.shelter.shelter_id == shelter.shelter_id %}selected{% endif %}>
+                                    {{ shelter.name }} - {{ shelter.city }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            {% if kennel %}
+                            <input type="hidden" name="shelter_id" value="{{ kennel.shelter.shelter_id }}">
+                            <small class="text-muted">Shelter cannot be changed after creation</small>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Kennel Code *</label>
+                            <input type="text" name="kennel_code" class="form-control" value="{{ kennel.kennel_code|default:'' }}" required>
+                            <small class="text-muted">Must be unique within this shelter branch</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Type *</label>
+                            <select name="type" class="form-select" required>
+                                <option value="Indoor" {% if kennel and kennel.type == 'Indoor' %}selected{% endif %}>Indoor</option>
+                                <option value="Outdoor" {% if kennel and kennel.type == 'Outdoor' %}selected{% endif %}>Outdoor</option>
+                                <option value="Quarantine" {% if kennel and kennel.type == 'Quarantine' %}selected{% endif %}>Quarantine</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Capacity *</label>
+                            <input type="number" name="capacity" class="form-control" value="{{ kennel.capacity|default:'' }}" min="1" required>
+                            <small class="text-muted">Maximum number of pets this kennel can hold</small>
+                        </div>
+
+                        {% if kennel %}
+                        <div class="mb-3">
+                            <label class="form-label">Current Occupancy</label>
+                            <input type="number" name="current_occupancy" class="form-control" value="{{ kennel.current_occupancy|default:'0' }}" min="0" max="{{ kennel.capacity }}">
+                            <small class="text-muted">Current number of pets in this kennel</small>
+                        </div>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label class="form-label">Status *</label>
+                            <select name="status" class="form-select" required>
+                                <option value="Available" {% if kennel and kennel.status == 'Available' %}selected{% endif %}>Available</option>
+                                <option value="Occupied" {% if kennel and kennel.status == 'Occupied' %}selected{% endif %}>Occupied</option>
+                                <option value="Maintenance" {% if kennel and kennel.status == 'Maintenance' %}selected{% endif %}>Maintenance</option>
+                            </select>
+                        </div>
+
+                        <div class="text-end">
+                            <a href="{% url 'kennel_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Save Kennel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

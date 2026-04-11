@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h3><i class="fas fa-clipboard-list"></i> Home Visit Result</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <strong>Application ID:</strong> APP-{{ visit.application.application_id|stringformat:"04d" }}<br>
+                        <strong>Pet:</strong> {{ visit.application.pet.name }}<br>
+                        <strong>Adopter:</strong> {{ visit.application.adopter.first_name }} {{ visit.application.adopter.last_name }}<br>
+                        <strong>Visit Date:</strong> {{ visit.visit_date }}<br>
+                        <strong>Address:</strong> {{ visit.application.adopter.address }}
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Home Visit Result *</label>
+                            <select name="result" class="form-select" required>
+                                <option value="">-- Select Result --</option>
+                                <option value="Pass">Pass - Home is suitable</option>
+                                <option value="Fail">Fail - Home is not suitable</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Remarks</label>
+                            <textarea name="remarks" class="form-control" rows="3" placeholder="Add visit notes...">{{ visit.remarks|default:'' }}</textarea>
+                        </div>
+                        <div class="text-end">
+                            <a href="{% url 'homevisit_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Save Result</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

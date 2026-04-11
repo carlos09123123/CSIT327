@@ -2,32 +2,141 @@
 
 {% block content %}
 <div class="container">
-    <h1>Adoptions</h1>
-    <a href="{% url 'adoption_add' %}" class="btn btn-primary">Add Adoption</a>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Pet</th>
-                <th>Adopter</th>
-                <th>Adoption Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for adoption in adoptions %}
-            <tr>
-                <td>{{ adoption.pet }}</td>
-                <td>{{ adoption.adopter }}</td>
-                <td>{{ adoption.adoption_date }}</td>
-                <td>{{ adoption.status }}</td>
-                <td>
-                    <a href="{% url 'adoption_edit' adoption.pk %}" class="btn btn-sm btn-warning">Edit</a>
-                    <a href="{% url 'adoption_delete' adoption.pk %}" class="btn btn-sm btn-danger">Delete</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="fas fa-file-signature"></i> Adoptions Management</h1>
+        <a href="{% url 'adoption_add' %}" class="btn btn-success">
+            <i class="fas fa-plus"></i> New Adoption
+        </a>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5>Total Adoptions</h5>
+                    <h2>{{ adoptions|length }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5>Completed</h5>
+                    <h2>{{ adoptions|length }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h5>Pending Applications</h5>
+                    <h2>{{ pending_applications|default:"0" }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5>Total Revenue</h5>
+                    <h2>${{ total_revenue|default:"0" }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Adoptions Table -->
+    <div class="card">
+        <div class="card-header bg-dark text-white">
+            <h5><i class="fas fa-list"></i> Adoption Records</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Pet</th>
+                            <th>Adopter</th>
+                            <th>Adoption Date</th>
+                            <th>Fee</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for adoption in adoptions %}
+                        <tr>
+                            <td>AD-{{ adoption.adoption_id|stringformat:"04d" }}</td>
+                            <td>
+                                <strong>{{ adoption.pet.name }}</strong><br>
+                                <small class="text-muted">{{ adoption.pet.species }}</small>
+                            </td>
+                            <td>{{ adoption.adopter.first_name }} {{ adoption.adopter.last_name }}</td>
+                            <td>{{ adoption.adoption_date }}</td>
+                            <td>${{ adoption.adoption_fee }}</td>
+                            <td>
+                                <span class="badge {% if adoption.status == 'Completed' %}bg-success{% else %}bg-danger{% endif %}">
+                                    {{ adoption.status }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{% url 'adoption_edit' adoption.adoption_id %}" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <a href="{% url 'adoption_delete' adoption.adoption_id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">
+                                    <i class="fas fa-trash"></i> Delete
+                                </a>
+                                <a href="{% url 'payment_add' adoption.adoption_id %}" class="btn btn-sm btn-info">
+                                    <i class="fas fa-money-bill"></i> Payment
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i> No adoption records found.
+                                    <a href="{% url 'adoption_add' %}">Create your first adoption record</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-paw fa-3x mb-3 text-primary"></i>
+                    <h5>Pending Applications</h5>
+                    <a href="{% url 'application_list' %}" class="btn btn-primary">View Applications</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-calendar-check fa-3x mb-3 text-success"></i>
+                    <h5>Home Visits</h5>
+                    <a href="{% url 'homevisit_list' %}" class="btn btn-success">Schedule Visits</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-money-bill-wave fa-3x mb-3 text-warning"></i>
+                    <h5>Payments</h5>
+                    <a href="{% url 'payment_list' %}" class="btn btn-warning">View Payments</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

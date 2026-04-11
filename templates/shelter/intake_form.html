@@ -2,12 +2,111 @@
 
 {% block content %}
 <div class="container">
-    <h1>{% if form.instance.pk %}Edit{% else %}Add{% endif %} Intake Record</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-success">Save</button>
-        <a href="{% url 'intake_list' %}" class="btn btn-secondary">Cancel</a>
-    </form>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3>{% if intake %}Edit Intake Record{% else %}New Intake Record{% endif %}</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        {% if not intake %}
+                        <div class="mb-3">
+                            <label class="form-label">Select Pet *</label>
+                            <select name="pet_id" class="form-select" required>
+                                <option value="">-- Select Pet --</option>
+                                {% for pet in pets %}
+                                <option value="{{ pet.pet_id }}">
+                                    {{ pet.name }} ({{ pet.species }}) - {{ pet.status }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            <small class="text-muted">Each pet can have only one intake record</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Shelter Branch *</label>
+                            <select name="shelter_id" class="form-select" required>
+                                <option value="">-- Select Shelter --</option>
+                                {% for shelter in shelters %}
+                                <option value="{{ shelter.shelter_id }}">
+                                    {{ shelter.name }} - {{ shelter.city }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Staff</label>
+                            <select name="staff_id" class="form-select">
+                                <option value="">-- Select Staff (Optional) --</option>
+                                {% for staff in staff_members %}
+                                <option value="{{ staff.staff_id }}">
+                                    {{ staff.first_name }} {{ staff.last_name }} ({{ staff.role }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Intake Type *</label>
+                            <select name="intake_type" class="form-select" required>
+                                <option value="Stray">Stray - Found wandering</option>
+                                <option value="Surrender">Surrender - Owner gave up pet</option>
+                                <option value="Rescue">Rescue - Rescued from situation</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Condition Notes</label>
+                            <textarea name="condition_notes" class="form-control" rows="3" placeholder="Describe the pet's condition upon intake..."></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Additional Notes</label>
+                            <textarea name="notes" class="form-control" rows="2" placeholder="Any other relevant information..."></textarea>
+                        </div>
+                        {% else %}
+                        <div class="mb-3">
+                            <label class="form-label">Pet</label>
+                            <input type="text" class="form-control" value="{{ intake.pet.name }}" disabled>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Shelter</label>
+                            <input type="text" class="form-control" value="{{ intake.shelter.name }}" disabled>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Intake Type *</label>
+                            <select name="intake_type" class="form-select" required>
+                                <option value="Stray" {% if intake.intake_type == 'Stray' %}selected{% endif %}>Stray</option>
+                                <option value="Surrender" {% if intake.intake_type == 'Surrender' %}selected{% endif %}>Surrender</option>
+                                <option value="Rescue" {% if intake.intake_type == 'Rescue' %}selected{% endif %}>Rescue</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Condition Notes</label>
+                            <textarea name="condition_notes" class="form-control" rows="3">{{ intake.condition_notes|default:'' }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Additional Notes</label>
+                            <textarea name="notes" class="form-control" rows="2">{{ intake.notes|default:'' }}</textarea>
+                        </div>
+                        {% endif %}
+
+                        <div class="text-end">
+                            <a href="{% url 'intake_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Save Intake Record</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

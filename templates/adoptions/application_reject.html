@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h3><i class="fas fa-times-circle"></i> Reject Application</h3>
+                </div>
+                <div class="card-body text-center">
+                    <i class="fas fa-exclamation-triangle fa-4x text-danger mb-3"></i>
+                    <p>Are you sure you want to reject this adoption application?</p>
+
+                    <div class="alert alert-info text-start">
+                        <strong>Application ID:</strong> APP-{{ application.application_id|stringformat:"04d" }}<br>
+                        <strong>Pet:</strong> {{ application.pet.name }} ({{ application.pet.species }})<br>
+                        <strong>Adopter:</strong> {{ application.adopter.first_name }} {{ application.adopter.last_name }}<br>
+                        <strong>Application Date:</strong> {{ application.application_date }}
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3 text-start">
+                            <label class="form-label">Reason for rejection (optional):</label>
+                            <textarea name="notes" class="form-control" rows="3" placeholder="Enter reason for rejection..."></textarea>
+                        </div>
+                        <div class="mt-3">
+                            <a href="{% url 'application_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-danger">Yes, Reject Application</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

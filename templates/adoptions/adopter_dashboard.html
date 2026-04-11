@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="alert alert-success">
+        <h4>Welcome back, {{ adopter.first_name }}!</h4>
+        <p>You are logged in as an <strong>Adopter</strong>. You can view available pets and track your applications.</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5><i class="fas fa-paw"></i> Available Pets for Adoption</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for pet in available_pets %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5>{{ pet.name }}</h5>
+                                    <p><strong>Species:</strong> {{ pet.species }}<br>
+                                    <strong>Breed:</strong> {{ pet.breed|default:"Mixed" }}<br>
+                                    <strong>Age:</strong> {{ pet.age }} months<br>
+                                    <strong>Size:</strong> {{ pet.size }}</p>
+                                    <a href="{% url 'adopter_apply' pet.pet_id %}" class="btn btn-primary btn-sm w-100">
+                                        <i class="fas fa-paw"></i> Apply for Adoption
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="col-12">
+                            <p class="text-muted text-center">No pets available for adoption at this time.</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5><i class="fas fa-file-alt"></i> My Applications</h5>
+                </div>
+                <div class="card-body">
+                    {% for app in applications %}
+                    <div class="mb-3 border-bottom pb-2">
+                        <strong>{{ app.pet.name }}</strong><br>
+                        Status:
+                        <span class="badge {% if app.status == 'Pending' %}bg-warning{% elif app.status == 'Approved' %}bg-success{% else %}bg-danger{% endif %}">
+                            {{ app.status }}
+                        </span>
+                        <br>
+                        <small class="text-muted">Applied: {{ app.application_date }}</small>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted text-center">No applications yet.</p>
+                    {% endfor %}
+                    <hr>
+                    <a href="{% url 'adopter_apply_list' %}" class="btn btn-primary btn-sm w-100">
+                        <i class="fas fa-plus"></i> Submit New Application
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

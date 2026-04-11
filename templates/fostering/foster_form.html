@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3>{% if foster %}Edit Foster Assignment{% else %}New Foster Assignment{% endif %}</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        {% if not foster %}
+                        <div class="mb-3">
+                            <label class="form-label">Select Pet *</label>
+                            <select name="pet_id" class="form-select" required>
+                                <option value="">-- Select Pet --</option>
+                                {% for pet in pets %}
+                                <option value="{{ pet.pet_id }}">
+                                    {{ pet.name }} ({{ pet.species }}) - {{ pet.age }} months - {{ pet.status }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            <small class="text-muted">Only pets without active foster assignments are shown</small>
+                        </div>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label class="form-label">Foster Family Name *</label>
+                            <input type="text" name="foster_name" class="form-control" value="{{ foster.foster_name|default:'' }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Contact Number *</label>
+                            <input type="text" name="foster_phone" class="form-control" value="{{ foster.foster_phone|default:'' }}" required>
+                            <small class="text-muted">Format: +63 XXX XXX XXXX</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Address *</label>
+                            <textarea name="foster_address" class="form-control" rows="3" required>{{ foster.foster_address|default:'' }}</textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Start Date *</label>
+                                <input type="date" name="start_date" class="form-control" value="{{ foster.start_date|default:'' }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">End Date (Optional)</label>
+                                <input type="date" name="end_date" class="form-control" value="{{ foster.end_date|default:'' }}">
+                                <small class="text-muted">Must be after start date</small>
+                            </div>
+                        </div>
+
+                        {% if foster %}
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <select name="status" class="form-select">
+                                <option value="Active" {% if foster.status == 'Active' %}selected{% endif %}>Active</option>
+                                <option value="Completed" {% if foster.status == 'Completed' %}selected{% endif %}>Completed</option>
+                                <option value="Cancelled" {% if foster.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                            </select>
+                        </div>
+                        {% endif %}
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Business Rules:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>A pet cannot have multiple active foster assignments simultaneously</li>
+                                <li>End date must always occur after start date</li>
+                                <li>When foster ends, the pet becomes available for adoption</li>
+                            </ul>
+                        </div>
+
+                        <div class="text-end">
+                            <a href="{% url 'foster_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Save Foster Assignment</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

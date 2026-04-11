@@ -2,12 +2,51 @@
 
 {% block content %}
 <div class="container">
-    <h1>{% if form.instance.pk %}Edit{% else %}Add{% endif %} Payment</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-success">Save</button>
-        <a href="{% url 'payment_list' %}" class="btn btn-secondary">Cancel</a>
-    </form>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3><i class="fas fa-money-bill-wave"></i> Record Payment</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <strong>Adoption ID:</strong> AD-{{ adoption.adoption_id|stringformat:"04d" }}<br>
+                        <strong>Pet:</strong> {{ adoption.pet.name }}<br>
+                        <strong>Adopter:</strong> {{ adoption.adopter.first_name }} {{ adoption.adopter.last_name }}<br>
+                        <strong>Adoption Fee:</strong> ${{ adoption.adoption_fee }}
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Amount *</label>
+                            <input type="number" step="0.01" name="amount" class="form-control" value="{{ adoption.adoption_fee }}" required>
+                            <small class="text-muted">Must match the adoption fee (${{ adoption.adoption_fee }})</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Payment Method *</label>
+                            <select name="method" class="form-select" required>
+                                <option value="">-- Select Method --</option>
+                                <option value="Cash">Cash</option>
+                                <option value="GCash">GCash</option>
+                                <option value="Card">Credit/Debit Card</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Reference Number</label>
+                            <input type="text" name="reference_no" class="form-control" placeholder="Optional reference number">
+                        </div>
+
+                        <div class="text-end">
+                            <a href="{% url 'payment_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Record Payment</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

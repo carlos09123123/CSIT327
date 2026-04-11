@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3><i class="fas fa-id-card"></i> My Profile</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th width="30%">Username:</th>
+                            <td>{{ user.username }}</td>
+                        </tr>
+                        <tr>
+                            <th>Full Name:</th>
+                            <td>{{ user.first_name }} {{ user.last_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Email:</th>
+                            <td>{{ user.email }}</td>
+                        </tr>
+                        <tr>
+                            <th>Phone:</th>
+                            <td>{{ user.phone|default:"Not provided" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Role:</th>
+                            <td><span class="badge bg-info">{{ user.role }}</span></td>
+                        </tr>
+                        <tr>
+                            <th>Status:</th>
+                            <td>{% if user.status %}<span class="badge bg-success">Active</span>{% else %}<span class="badge bg-danger">Inactive</span>{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <th>Joined:</th>
+                            <td>{{ user.date_joined|date:"F j, Y" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Last Login:</th>
+                            <td>{{ user.last_login|date:"F j, Y g:i A"|default:"Never" }}</td>
+                        </tr>
+                    </table>
+                    <div class="text-end">
+                        <a href="{% url 'profile_edit' %}" class="btn btn-warning">Edit Profile</a>
+                        <a href="{% url 'change_password' %}" class="btn btn-info">Change Password</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

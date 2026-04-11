@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h3>Complete Foster Assignment</h3>
+                </div>
+                <div class="card-body text-center">
+                    <i class="fas fa-check-circle fa-4x text-success mb-3"></i>
+                    <p>Mark the foster assignment as completed for:</p>
+                    <h4>{{ foster.pet.name }}</h4>
+                    <div class="alert alert-info">
+                        <strong>Foster Family:</strong> {{ foster.foster_name }}<br>
+                        <strong>Start Date:</strong> {{ foster.start_date }}
+                    </div>
+                    <p>Once completed, <strong>{{ foster.pet.name }}</strong> will become available for adoption.</p>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mt-3">
+                            <a href="{% url 'foster_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-success">Yes, Complete Foster</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

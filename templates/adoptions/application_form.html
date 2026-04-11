@@ -2,12 +2,63 @@
 
 {% block content %}
 <div class="container">
-    <h1>{% if form.instance.pk %}Edit{% else %}Add{% endif %} Application</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-success">Save</button>
-        <a href="{% url 'application_list' %}" class="btn btn-secondary">Cancel</a>
-    </form>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3><i class="fas fa-file-alt"></i> New Adoption Application</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Select Adopter *</label>
+                            <select name="adopter_id" class="form-select" required>
+                                <option value="">-- Select Adopter --</option>
+                                {% for adopter in adopters %}
+                                <option value="{{ adopter.adopter_id }}">
+                                    {{ adopter.first_name }} {{ adopter.last_name }} - {{ adopter.email }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Select Pet *</label>
+                            <select name="pet_id" class="form-select" required>
+                                <option value="">-- Select Pet --</option>
+                                {% for pet in pets %}
+                                <option value="{{ pet.pet_id }}">
+                                    {{ pet.name }} ({{ pet.species }}) - {{ pet.age }} months
+                                </option>
+                                {% endfor %}
+                            </select>
+                            <small class="text-muted">Only available pets are shown</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Additional Notes</label>
+                            <textarea name="notes" class="form-control" rows="3" placeholder="Any additional information about this application..."></textarea>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Business Rules:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>Pet must have "Available" status to apply</li>
+                                <li>Adopter can have maximum 3 pending applications</li>
+                                <li>Application status starts as "Pending"</li>
+                            </ul>
+                        </div>
+
+                        <div class="text-end">
+                            <a href="{% url 'application_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Submit Application</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

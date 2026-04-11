@@ -2,32 +2,65 @@
 
 {% block content %}
 <div class="container">
-    <h1>Adoption Applications</h1>
-    <a href="{% url 'application_add' %}" class="btn btn-primary">Add Application</a>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Adopter</th>
-                <th>Pet</th>
-                <th>Status</th>
-                <th>Application Date</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for application in applications %}
-            <tr>
-                <td>{{ application.adopter }}</td>
-                <td>{{ application.pet }}</td>
-                <td>{{ application.status }}</td>
-                <td>{{ application.application_date }}</td>
-                <td>
-                    <a href="{% url 'application_edit' application.pk %}" class="btn btn-sm btn-warning">Edit</a>
-                    <a href="{% url 'application_delete' application.pk %}" class="btn btn-sm btn-danger">Delete</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="fas fa-file-alt"></i> Adoption Applications</h1>
+        <a href="{% url 'application_add' %}" class="btn btn-success">
+            <i class="fas fa-plus"></i> New Application
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Adopter</th>
+                            <th>Pet</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in applications %}
+                        <tr>
+                            <td>APP-{{ app.application_id|stringformat:"04d" }}</td>
+                            <td>{{ app.adopter.first_name }} {{ app.adopter.last_name }}</td>
+                            <td>{{ app.pet.name }}</td>
+                            <td>{{ app.application_date }}</td>
+                            <td>
+                                <span class="badge {% if app.status == 'Pending' %}bg-warning{% elif app.status == 'Approved' %}bg-success{% else %}bg-danger{% endif %}">
+                                    {{ app.status }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if app.status == 'Pending' %}
+                                <a href="{% url 'application_approve' app.application_id %}" class="btn btn-sm btn-success">
+                                    <i class="fas fa-check"></i> Approve
+                                </a>
+                                <a href="{% url 'application_reject' app.application_id %}" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-times"></i> Reject
+                                </a>
+                                {% endif %}
+                                <a href="{% url 'interview_add' app.application_id %}" class="btn btn-sm btn-info">
+                                    <i class="fas fa-calendar"></i> Schedule Interview
+                                </a>
+                                <a href="{% url 'homevisit_add' app.application_id %}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-home"></i> Home Visit
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">No applications found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

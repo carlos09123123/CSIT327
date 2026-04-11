@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h3><i class="fas fa-check-circle"></i> Approve Application</h3>
+                </div>
+                <div class="card-body text-center">
+                    <i class="fas fa-paw fa-4x text-success mb-3"></i>
+                    <p>Are you sure you want to approve this adoption application?</p>
+
+                    <div class="alert alert-info text-start">
+                        <strong>Application ID:</strong> APP-{{ application.application_id|stringformat:"04d" }}<br>
+                        <strong>Pet:</strong> {{ application.pet.name }} ({{ application.pet.species }})<br>
+                        <strong>Adopter:</strong> {{ application.adopter.first_name }} {{ application.adopter.last_name }}<br>
+                        <strong>Application Date:</strong> {{ application.application_date }}
+                    </div>
+
+                    <p class="text-warning">Once approved, you can proceed with the adoption process.</p>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mt-3">
+                            <a href="{% url 'application_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-success">Yes, Approve Application</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

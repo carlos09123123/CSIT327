@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-warning">
+                    <h3><i class="fas fa-edit"></i> Edit Staff: {{ staff.username }}</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">First Name</label>
+                                <input type="text" name="first_name" class="form-control" value="{{ staff.first_name }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Last Name</label>
+                                <input type="text" name="last_name" class="form-control" value="{{ staff.last_name }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" name="email" class="form-control" value="{{ staff.email }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Phone</label>
+                                <input type="text" name="phone" class="form-control" value="{{ staff.phone }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Role</label>
+                                <select name="role" class="form-select">
+                                    <option value="Staff" {% if staff.role == 'Staff' %}selected{% endif %}>Staff</option>
+                                    <option value="Manager" {% if staff.role == 'Manager' %}selected{% endif %}>Manager</option>
+                                    <option value="Vet" {% if staff.role == 'Vet' %}selected{% endif %}>Veterinarian</option>
+                                    <option value="Volunteer" {% if staff.role == 'Volunteer' %}selected{% endif %}>Volunteer</option>
+                                    <option value="Admin" {% if staff.role == 'Admin' %}selected{% endif %}>Admin</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check mt-4">
+                                    <input type="checkbox" name="status" class="form-check-input" {% if staff.status %}checked{% endif %}>
+                                    <label class="form-check-label">Active Status</label>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">New Password (leave blank to keep current)</label>
+                                <input type="password" name="new_password" class="form-control">
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <a href="{% url 'staff_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Update Staff</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -2,12 +2,85 @@
 
 {% block content %}
 <div class="container">
-    <h1>{% if form.instance.pk %}Edit{% else %}Add{% endif %} Adoption</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-success">Save</button>
-        <a href="{% url 'adoption_list' %}" class="btn btn-secondary">Cancel</a>
-    </form>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3>{% if adoption %}Edit Adoption{% else %}New Adoption Record{% endif %}</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        {% if not adoption %}
+                        <div class="mb-3">
+                            <label class="form-label">Select Pet *</label>
+                            <select name="pet_id" class="form-select" required>
+                                <option value="">-- Select Pet --</option>
+                                {% for pet in pets %}
+                                <option value="{{ pet.pet_id }}">
+                                    {{ pet.name }} ({{ pet.species }}) - {{ pet.age }} months
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Select Adopter *</label>
+                            <select name="adopter_id" class="form-select" required>
+                                <option value="">-- Select Adopter --</option>
+                                {% for adopter in adopters %}
+                                <option value="{{ adopter.adopter_id }}">
+                                    {{ adopter.first_name }} {{ adopter.last_name }} - {{ adopter.email }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Adoption Date *</label>
+                            <input type="date" name="adoption_date" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Adoption Fee *</label>
+                            <input type="number" step="0.01" name="adoption_fee" class="form-control"
+                                   placeholder="0.00" required>
+                        </div>
+                        {% else %}
+                        <div class="mb-3">
+                            <label class="form-label">Pet</label>
+                            <input type="text" class="form-control" value="{{ adoption.pet.name }}" disabled>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Adopter</label>
+                            <input type="text" class="form-control" value="{{ adoption.adopter.first_name }} {{ adoption.adopter.last_name }}" disabled>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Adoption Fee *</label>
+                            <input type="number" step="0.01" name="adoption_fee" class="form-control"
+                                   value="{{ adoption.adoption_fee }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Status *</label>
+                            <select name="status" class="form-select" required>
+                                <option value="Completed" {% if adoption.status == 'Completed' %}selected{% endif %}>Completed</option>
+                                <option value="Cancelled" {% if adoption.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                            </select>
+                        </div>
+                        {% endif %}
+
+                        <div class="text-end">
+                            <a href="{% url 'adoption_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Save Adoption</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

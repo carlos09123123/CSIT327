@@ -2,56 +2,121 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-md-12 text-center">
-        <h1 class="display-4">Welcome to Shelter Management System</h1>
-        <p class="lead">Animal Shelter Management System</p>
+    <div class="col-md-12 text-center mb-5">
+        <h1 class="display-4" style="color: #2c3e50;">Welcome to Shelter Management System</h1>
+        <p class="lead">Animal Shelter Adoption & Rescue System</p>
+        <p>Caring, protecting, and finding loving homes for animals in need.</p>
         <hr class="my-4">
     </div>
 </div>
 
-<div class="row mt-5">
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="dashboard-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+            <i class="fas fa-paw"></i>
+            <h3>{{ total_pets|default:"0" }}</h3>
+            <p>Total Pets</p>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="dashboard-card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white;">
+            <i class="fas fa-check-circle"></i>
+            <h3>{{ available_pets|default:"0" }}</h3>
+            <p>Available for Adoption</p>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="dashboard-card" style="background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%); color: white;">
+            <i class="fas fa-heart"></i>
+            <h3>{{ total_fosters|default:"0" }}</h3>
+            <p>Active Fosters</p>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="dashboard-card" style="background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%); color: white;">
+            <i class="fas fa-users"></i>
+            <h3>{{ total_staff|default:"0" }}</h3>
+            <p>Staff Members</p>
+        </div>
+    </div>
+</div>
+
+<!-- Navigation Cards -->
+<div class="row mt-4">
     <div class="col-md-4 mb-4">
         <div class="card h-100">
             <div class="card-body text-center">
-                <h5 class="card-title">🐕 Animals</h5>
-                <p class="card-text">Manage pets, medical records, and vaccinations</p>
-                <a href="/animals/" class="btn btn-primary">Go to Animals</a>
+                <i class="fas fa-dog fa-4x mb-3" style="color: #667eea;"></i>
+                <i class="fas fa-cat fa-4x mb-3" style="color: #764ba2;"></i>
+                <h5 class="card-title">🐕 Animals Management</h5>
+                <p class="card-text">Manage pets, medical records, vaccinations, and veterinarians.</p>
+                <ul class="text-start">
+                    <li>Add/Edit/Delete Pets</li>
+                    <li>Track Medical History</li>
+                    <li>Vaccination Records</li>
+                </ul>
+                <a href="{% url 'pet_list' %}" class="btn btn-primary">Go to Animals</a>
             </div>
         </div>
     </div>
     <div class="col-md-4 mb-4">
         <div class="card h-100">
             <div class="card-body text-center">
-                <h5 class="card-title">🏠 Shelter</h5>
-                <p class="card-text">Manage shelter branches, kennels, and intake records</p>
-                <a href="/shelter/" class="btn btn-primary">Go to Shelter</a>
+                <i class="fas fa-building fa-4x mb-3" style="color: #11998e;"></i>
+                <h5 class="card-title">🏠 Shelter Management</h5>
+                <p class="card-text">Manage shelter branches, kennels, and intake records.</p>
+                <ul class="text-start">
+                    <li>Multiple Branch Locations</li>
+                    <li>Kennel/Cage Management</li>
+                    <li>Pet Intake Tracking</li>
+                </ul>
+                <a href="{% url 'shelter_list' %}" class="btn btn-success">Go to Shelter</a>
             </div>
         </div>
     </div>
     <div class="col-md-4 mb-4">
         <div class="card h-100">
             <div class="card-body text-center">
-                <h5 class="card-title">❤️ Fostering</h5>
-                <p class="card-text">Manage foster assignments for pets</p>
-                <a href="/fostering/" class="btn btn-primary">Go to Fostering</a>
+                <i class="fas fa-heart fa-4x mb-3" style="color: #f2994a;"></i>
+                <h5 class="card-title">❤️ Fostering Management</h5>
+                <p class="card-text">Manage foster assignments and temporary care arrangements.</p>
+                <ul class="text-start">
+                    <li>Create Foster Assignments</li>
+                    <li>Track Active Fosters</li>
+                    <li>Foster History</li>
+                </ul>
+                <a href="{% url 'foster_list' %}" class="btn btn-warning">Go to Fostering</a>
             </div>
         </div>
     </div>
     <div class="col-md-6 mb-4">
         <div class="card h-100">
             <div class="card-body text-center">
-                <h5 class="card-title">📋 Adoptions</h5>
-                <p class="card-text">Manage adoption applications, home visits, and payments</p>
-                <a href="/adoptions/" class="btn btn-primary">Go to Adoptions</a>
+                <i class="fas fa-file-signature fa-4x mb-3" style="color: #eb3349;"></i>
+                <h5 class="card-title">📋 Adoptions Management</h5>
+                <p class="card-text">Manage adoption applications, home visits, and payments.</p>
+                <ul class="text-start">
+                    <li>Adopter Registration</li>
+                    <li>Application Processing</li>
+                    <li>Payment Processing</li>
+                </ul>
+                <a href="{% url 'adoption_list' %}" class="btn btn-danger">Go to Adoptions</a>
             </div>
         </div>
     </div>
     <div class="col-md-6 mb-4">
         <div class="card h-100">
             <div class="card-body text-center">
-                <h5 class="card-title">👥 Staff</h5>
-                <p class="card-text">Manage staff accounts and veterinary information</p>
-                <a href="/accounts/" class="btn btn-primary">Go to Staff</a>
+                <i class="fas fa-users fa-4x mb-3" style="color: #667eea;"></i>
+                <h5 class="card-title">👥 Staff Management</h5>
+                <p class="card-text">Manage staff accounts, roles, and permissions.</p>
+                <ul class="text-start">
+                    <li>Staff Registration</li>
+                    <li>Role-Based Access</li>
+                    <li>Profile Management</li>
+                </ul>
+                <a href="{% url 'staff_list' %}" class="btn btn-primary">Go to Staff</a>
             </div>
         </div>
     </div>

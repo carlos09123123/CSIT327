@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h3>Confirm Delete</h3>
+                </div>
+                <div class="card-body text-center">
+                    <i class="fas fa-exclamation-triangle fa-4x text-danger mb-3"></i>
+                    <p>Are you sure you want to delete the branch:</p>
+                    <h4 class="text-danger">{{ shelter.name }}</h4>
+                    <p><strong>Location:</strong> {{ shelter.city }}</p>
+                    <p class="text-warning">This action cannot be undone! All associated kennels will also be deleted.</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mt-3">
+                            <a href="{% url 'shelter_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-danger">Yes, Delete Branch</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

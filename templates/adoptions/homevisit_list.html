@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4"><i class="fas fa-home"></i> Home Visits</h1>
+
+    <div class="card">
+        <div class="card-header bg-dark text-white">
+            <h5><i class="fas fa-list"></i> Scheduled Home Visits</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Application</th>
+                            <th>Pet</th>
+                            <th>Adopter</th>
+                            <th>Visit Date</th>
+                            <th>Result</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for visit in visits %}
+                        <tr>
+                            <td>HV-{{ visit.visit_id|stringformat:"04d" }}</td>
+                            <td>APP-{{ visit.application.application_id|stringformat:"04d" }}</td>
+                            <td>{{ visit.application.pet.name }}</td>
+                            <td>{{ visit.application.adopter.first_name }} {{ visit.application.adopter.last_name }}</td>
+                            <td>{{ visit.visit_date }}</td>
+                            <td>
+                                {% if visit.result %}
+                                <span class="badge {% if visit.result == 'Pass' %}bg-success{% else %}bg-danger{% endif %}">
+                                    {{ visit.result }}
+                                </span>
+                                {% else %}
+                                <span class="badge bg-warning">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if not visit.result %}
+                                <a href="{% url 'homevisit_result' visit.visit_id %}" class="btn btn-sm btn-info">
+                                    <i class="fas fa-clipboard-list"></i> Record Result
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center">No home visits scheduled.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

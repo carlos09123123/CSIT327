@@ -2,32 +2,69 @@
 
 {% block content %}
 <div class="container">
-    <h1>Intake Records</h1>
-    <a href="{% url 'intake_add' %}" class="btn btn-primary">Add Intake</a>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Pet</th>
-                <th>Shelter</th>
-                <th>Type</th>
-                <th>Date</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for intake in intakes %}
-            <tr>
-                <td>{{ intake.pet }}</td>
-                <td>{{ intake.shelter }}</td>
-                <td>{{ intake.intake_type }}</td>
-                <td>{{ intake.intake_date }}</td>
-                <td>
-                    <a href="{% url 'intake_edit' intake.pk %}" class="btn btn-sm btn-warning">Edit</a>
-                    <a href="{% url 'intake_delete' intake.pk %}" class="btn btn-sm btn-danger">Delete</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="fas fa-upload"></i> Intake Records</h1>
+        <a href="{% url 'intake_add' %}" class="btn btn-success">
+            <i class="fas fa-plus"></i> New Intake Record
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-dark text-white">
+            <h5><i class="fas fa-list"></i> ALL INTAKE RECORDS</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Pet</th>
+                            <th>Shelter</th>
+                            <th>Intake Type</th>
+                            <th>Intake Date</th>
+                            <th>Staff</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for intake in intakes %}
+                        <tr>
+                            <td>{{ intake.intake_id }}</td>
+                            <td>{{ intake.pet.name }}<br>
+                                <small class="text-muted">{{ intake.pet.species }}</small>
+                             </td>
+                            <td>{{ intake.shelter.name }}</td>
+                            <td>
+                                <span class="badge {% if intake.intake_type == 'Stray' %}bg-warning{% elif intake.intake_type == 'Surrender' %}bg-info{% else %}bg-success{% endif %}">
+                                    {{ intake.intake_type }}
+                                </span>
+                             </td>
+                            <td>{{ intake.intake_date }}</td>
+                            <td>{{ intake.staff.first_name|default:"-" }} {{ intake.staff.last_name|default:"" }}</td>
+                            <td>
+                                <a href="{% url 'intake_edit' intake.intake_id %}" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <a href="{% url 'intake_delete' intake.intake_id %}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this intake record?')">
+                                    <i class="fas fa-trash"></i> Delete
+                                </a>
+                             </td>
+                         </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i> No intake records found.
+                                    <a href="{% url 'intake_add' %}">Add your first intake record</a>
+                                </div>
+                             </td>
+                         </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
