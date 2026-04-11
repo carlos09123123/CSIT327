@@ -100,6 +100,12 @@
             color: #333;
         }
 
+        .btn-info {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border: none;
+            color: white;
+        }
+
         .table {
             background: white;
             border-radius: 15px;
@@ -126,55 +132,40 @@
             margin-top: 50px;
         }
 
-        .dashboard-card {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            transition: all 0.3s;
-        }
-
-        .dashboard-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .dashboard-card i {
-            font-size: 48px;
-            margin-bottom: 15px;
-        }
-
-        .dashboard-card h3 {
-            font-size: 32px;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-
         .badge {
             padding: 5px 10px;
             border-radius: 20px;
             font-weight: 500;
         }
 
-        .form-control, .form-select {
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            padding: 10px 15px;
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
-        .form-control:focus, .form-select:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        footer a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        footer a:hover {
+            color: white;
+            text-decoration: underline;
         }
 
         @media (max-width: 768px) {
             .navbar-brand {
                 font-size: 1.3rem;
-            }
-            .dashboard-card i {
-                font-size: 32px;
-            }
-            .dashboard-card h3 {
-                font-size: 24px;
             }
         }
     </style>
@@ -182,7 +173,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'index' %}">
+            <a class="navbar-brand" href="{% if user.is_authenticated %}{% url 'index' %}{% else %}{% url 'login' %}{% endif %}">
                 <i class="fas fa-paw"></i> 🐾 Shelter Management
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -190,37 +181,99 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'index' %}">
-                            <i class="fas fa-home"></i> Home
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'pet_list' %}">
-                            <i class="fas fa-dog"></i> Animals
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'shelter_list' %}">
-                            <i class="fas fa-building"></i> Shelter
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'foster_list' %}">
-                            <i class="fas fa-heart"></i> Fostering
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'adoption_list' %}">
-                            <i class="fas fa-file-signature"></i> Adoptions
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'staff_list' %}">
-                            <i class="fas fa-users"></i> Staff
-                        </a>
-                    </li>
+
                     {% if user.is_authenticated %}
+                        <!-- ==================== ADMIN MENU ==================== -->
+                        {% if user.role == 'Admin' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'index' %}">
+                                    <i class="fas fa-home"></i> Home
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'pet_list' %}">
+                                    <i class="fas fa-dog"></i> Animals
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'shelter_list' %}">
+                                    <i class="fas fa-building"></i> Shelter
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'foster_list' %}">
+                                    <i class="fas fa-heart"></i> Fostering
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'adoption_list' %}">
+                                    <i class="fas fa-file-signature"></i> Adoptions
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'staff_list' %}">
+                                    <i class="fas fa-users"></i> Staff
+                                </a>
+                            </li>
+
+                        <!-- ==================== MANAGER/STAFF MENU ==================== -->
+                        {% elif user.role == 'Manager' or user.role == 'Staff' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'index' %}">
+                                    <i class="fas fa-home"></i> Home
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'pet_list' %}">
+                                    <i class="fas fa-dog"></i> Animals
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'shelter_list' %}">
+                                    <i class="fas fa-building"></i> Shelter
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'foster_list' %}">
+                                    <i class="fas fa-heart"></i> Fostering
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'adoption_list' %}">
+                                    <i class="fas fa-file-signature"></i> Adoptions
+                                </a>
+                            </li>
+
+                        <!-- ==================== VETERINARIAN MENU ==================== -->
+                        {% elif user.role == 'Vet' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'index' %}">
+                                    <i class="fas fa-home"></i> Home
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'pet_list' %}">
+                                    <i class="fas fa-dog"></i> Pets
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'medical_record_list' %}">
+                                    <i class="fas fa-notes-medical"></i> Medical Records
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'medical_statistics' %}">
+                                    <i class="fas fa-chart-line"></i> Medical Stats
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'vet_list' %}">
+                                    <i class="fas fa-user-md"></i> Veterinarians
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        <!-- ==================== COMMON USER DROPDOWN (Profile, Logout) ==================== -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
                                 <i class="fas fa-user-circle"></i> {{ user.username }}
@@ -238,6 +291,31 @@
                                 </a></li>
                             </ul>
                         </li>
+
+                    <!-- ==================== ADOPTER MENU (Session-based) ==================== -->
+                    {% elif request.session.user_type == 'adopter' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'adopter_dashboard' %}">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'adopter_apply_list' %}">
+                                <i class="fas fa-paw"></i> Available Pets
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'adopter_dashboard' %}">
+                                <i class="fas fa-file-alt"></i> My Applications
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        </li>
+
+                    <!-- ==================== PUBLIC MENU (Not logged in) ==================== -->
                     {% else %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'login' %}">
@@ -274,6 +352,17 @@
         <div class="container">
             <p>&copy; 2024 Animal Shelter Adoption & Rescue System. All rights reserved.</p>
             <p>Caring, protecting, and finding loving homes for animals in need.</p>
+            <div class="mt-3">
+                <a href="{% url 'terms_waiver' %}" class="text-white text-decoration-none me-3">
+                    <i class="fas fa-file-contract"></i> Adoption Waiver & Terms of Service
+                </a>
+                <a href="#" class="text-white text-decoration-none me-3">
+                    <i class="fas fa-envelope"></i> Contact Us
+                </a>
+                <a href="#" class="text-white text-decoration-none">
+                    <i class="fas fa-question-circle"></i> FAQ
+                </a>
+            </div>
         </div>
     </footer>
 

@@ -55,6 +55,9 @@ def adopter_dashboard(request):
     }
     return render(request, 'adoptions/adopter_dashboard.html', context)
 
+def terms_waiver(request):
+    """Display the adoption waiver and terms of service"""
+    return render(request, 'adoptions/terms_waiver.html')
 
 # ==================== ADOPTER APPLICATION ACTIONS ====================
 @csrf_protect
@@ -84,6 +87,12 @@ def adopter_apply(request, pet_id):
         return redirect('adopter_dashboard')
 
     if request.method == 'POST':
+        # Check if user agreed to terms (waiver)
+        agree_terms = request.POST.get('agree_terms')
+        if not agree_terms:
+            messages.error(request, 'You must agree to the adoption terms and conditions.')
+            return render(request, 'adoptions/adopter_apply_form.html', {'pet': pet, 'adopter': adopter})
+
         notes = request.POST.get('notes', '')
 
         AdoptionApplication.objects.create(
@@ -282,9 +291,6 @@ def application_reject(request, pk):
 
     if request.method == 'POST':
         application.status = 'Rejected'
-        notes = request.POST.get('notes', '')
-        if notes:
-            application.notes = notes
         application.save()
         messages.warning(request, f'Application for {application.pet.name} has been rejected.')
         return redirect('application_list')
@@ -329,9 +335,7 @@ def interview_result(request, pk):
 
     if request.method == 'POST':
         result = request.POST.get('result')
-        remarks = request.POST.get('remarks', '')
         interview.result = result
-        interview.remarks = remarks
         interview.save()
         messages.success(request, f'Interview result updated to {result}!')
         return redirect('interview_list')
@@ -376,9 +380,7 @@ def homevisit_result(request, pk):
 
     if request.method == 'POST':
         result = request.POST.get('result')
-        remarks = request.POST.get('remarks', '')
         visit.result = result
-        visit.remarks = remarks
         visit.save()
         messages.success(request, f'Home visit result updated to {result}!')
         return redirect('homevisit_list')

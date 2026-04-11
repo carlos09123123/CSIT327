@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
-from django.core.exceptions import ValidationError
 
 
 class Staff(AbstractUser):
@@ -32,3 +31,27 @@ class Staff(AbstractUser):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.role})"
+
+    @property
+    def is_admin(self):
+        return self.role == 'Admin'
+
+    @property
+    def is_veterinarian(self):
+        return self.role == 'Vet'
+
+    @property
+    def is_staff_member(self):
+        return self.role in ['Admin', 'Manager', 'Staff']
+
+    @property
+    def can_manage_staff(self):
+        return self.role == 'Admin'
+
+    @property
+    def can_manage_pets(self):
+        return self.role in ['Admin', 'Manager', 'Staff']
+
+    @property
+    def can_manage_medical(self):
+        return self.role in ['Admin', 'Manager', 'Staff', 'Vet']

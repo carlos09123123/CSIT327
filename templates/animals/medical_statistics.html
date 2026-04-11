@@ -1,0 +1,322 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="fas fa-chart-line"></i> Medical Statistics Dashboard</h1>
+        <div>
+            <a href="{% url 'pet_list' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Pets
+            </a>
+            <a href="#" class="btn btn-primary" onclick="window.print()">
+                <i class="fas fa-print"></i> Print Report
+            </a>
+        </div>
+    </div>
+
+    {% if is_vet %}
+    <div class="alert alert-info">
+        <i class="fas fa-stethoscope"></i> Welcome, Dr. {{ user.first_name }}! Here is the complete medical statistics dashboard.
+    </div>
+    {% endif %}
+
+    <!-- Overview Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title">Total Pets</h6>
+                            <h2 class="mb-0">{{ total_pets }}</h2>
+                        </div>
+                        <i class="fas fa-paw fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title">Under Medical Care</h6>
+                            <h2 class="mb-0">{{ under_medical_care }}</h2>
+                        </div>
+                        <i class="fas fa-notes-medical fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-danger">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title">Unvaccinated Pets</h6>
+                            <h2 class="mb-0">{{ unvaccinated_pets }}</h2>
+                        </div>
+                        <i class="fas fa-syringe fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title">Medical Records</h6>
+                            <h2 class="mb-0">{{ total_medical_records }}</h2>
+                        </div>
+                        <i class="fas fa-file-alt fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vaccination Status Section -->
+    <div class="row mb-4">
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5><i class="fas fa-calendar-check"></i> Upcoming Vaccinations (Next 30 Days)</h5>
+                </div>
+                <div class="card-body">
+                    <h2 class="text-center text-success">{{ upcoming_count }}</h2>
+                    <p class="text-center">vaccinations due soon</p>
+                    {% if upcoming_vaccinations %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Pet</th>
+                                    <th>Vaccine</th>
+                                    <th>Due Date</th>
+                                    <th>Days Left</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for vacc in upcoming_vaccinations %}
+                                <tr>
+                                    <td>{{ vacc.pet_name }}</td
+                                    <td>{{ vacc.vaccine_name }}</td
+                                    <td>{{ vacc.due_date }}</td
+                                    <td><span class="badge bg-warning">{{ vacc.days_left }} days</span></td>
+                                 </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted text-center">No upcoming vaccinations.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h5><i class="fas fa-exclamation-triangle"></i> Overdue Vaccinations</h5>
+                </div>
+                <div class="card-body">
+                    <h2 class="text-center text-danger">{{ overdue_count }}</h2>
+                    <p class="text-center">vaccinations overdue</p>
+                    {% if overdue_vaccinations %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Pet</th>
+                                    <th>Vaccine</th>
+                                    <th>Due Date</th>
+                                    <th>Days Overdue</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for vacc in overdue_vaccinations %}
+                                <tr>
+                                    <td>{{ vacc.pet_name }}</td
+                                    <td>{{ vacc.vaccine_name }}</td
+                                    <td>{{ vacc.due_date }}</td
+                                    <td><span class="badge bg-danger">{{ vacc.days_overdue }} days</span></td>
+                                 </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted text-center">No overdue vaccinations.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Medical Records -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5><i class="fas fa-notes-medical"></i> Recent Medical Records (Last 30 Days)</h5>
+        </div>
+        <div class="card-body">
+            <h3 class="text-center text-primary">{{ recent_count }}</h3>
+            <p class="text-center">medical records in the last 30 days</p>
+            {% if recent_medical_records %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Pet</th>
+                            <th>Visit Date</th>
+                            <th>Diagnosis</th>
+                            <th>Treatment</th>
+                            <th>Veterinarian</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in recent_medical_records %}
+                        <tr>
+                            <td>{{ record.pet_name }}</td
+                            <td>{{ record.visit_date }}</td
+                            <td>{{ record.diagnosis|truncatechars:40 }}</td
+                            <td>{{ record.treatment|truncatechars:40 }}</td
+                            <td>{{ record.vet_name }}</td
+                         </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted text-center">No recent medical records found.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Common Diagnoses & Pet Health Status -->
+    <div class="row mb-4">
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5><i class="fas fa-chart-bar"></i> Most Common Diagnoses</h5>
+                </div>
+                <div class="card-body">
+                    {% if common_diagnoses %}
+                        {% for diag in common_diagnoses %}
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between">
+                                <span>{{ diag.name }}</span>
+                                <span class="badge bg-primary">{{ diag.count }} cases</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: {% widthratio diag.count common_diagnoses.0.count 100 %}%"></div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                    <p class="text-muted text-center">No diagnosis data available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5><i class="fas fa-chart-pie"></i> Pets by Health Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <p><span class="badge bg-success">Available:</span> <strong>{{ pets_by_status.Available }}</strong></p>
+                            <p><span class="badge bg-info">Adopted:</span> <strong>{{ pets_by_status.Adopted }}</strong></p>
+                        </div>
+                        <div class="col-6">
+                            <p><span class="badge bg-warning">Medical:</span> <strong>{{ pets_by_status.Medical }}</strong></p>
+                            <p><span class="badge bg-danger">Quarantine:</span> <strong>{{ pets_by_status.Quarantine }}</strong></p>
+                        </div>
+                    </div>
+                    <div class="progress mt-3" style="height: 30px;">
+                        <div class="progress-bar bg-success" style="width: {% widthratio pets_by_status.Available total_pets 100 %}%">
+                            Available: {{ pets_by_status.Available }}
+                        </div>
+                        <div class="progress-bar bg-info" style="width: {% widthratio pets_by_status.Adopted total_pets 100 %}%">
+                            Adopted: {{ pets_by_status.Adopted }}
+                        </div>
+                        <div class="progress-bar bg-warning" style="width: {% widthratio pets_by_status.Medical total_pets 100 %}%">
+                            Medical: {{ pets_by_status.Medical }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pets by Species -->
+    <div class="card mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5><i class="fas fa-chart-pie"></i> Pets by Species</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    <i class="fas fa-dog fa-3x text-primary"></i>
+                    <h3>{{ pets_by_species.Dog }}</h3>
+                    <p>Dogs</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <i class="fas fa-cat fa-3x text-success"></i>
+                    <h3>{{ pets_by_species.Cat }}</h3>
+                    <p>Cats</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <i class="fas fa-paw fa-3x text-warning"></i>
+                    <h3>{{ pets_by_species.Other }}</h3>
+                    <p>Other Species</p>
+                </div>
+            </div>
+            <div class="progress mt-3" style="height: 25px;">
+                <div class="progress-bar bg-primary" style="width: {% widthratio pets_by_species.Dog total_pets 100 %}%">
+                    Dogs: {{ pets_by_species.Dog }}
+                </div>
+                <div class="progress-bar bg-success" style="width: {% widthratio pets_by_species.Cat total_pets 100 %}%">
+                    Cats: {{ pets_by_species.Cat }}
+                </div>
+                <div class="progress-bar bg-warning" style="width: {% widthratio pets_by_species.Other total_pets 100 %}%">
+                    Other: {{ pets_by_species.Other }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions for Vets -->
+    <div class="card mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5><i class="fas fa-bolt"></i> Quick Actions</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3 text-center">
+                    <a href="{% url 'pet_list' %}" class="btn btn-outline-primary w-100 mb-2">
+                        <i class="fas fa-dog"></i> View All Pets
+                    </a>
+                </div>
+                <div class="col-md-3 text-center">
+                    <a href="{% url 'vet_list' %}" class="btn btn-outline-info w-100 mb-2">
+                        <i class="fas fa-user-md"></i> Veterinarians
+                    </a>
+                </div>
+                <div class="col-md-3 text-center">
+                    <a href="{% url 'pet_list' %}" class="btn btn-outline-success w-100 mb-2">
+                        <i class="fas fa-notes-medical"></i> Add Medical Record
+                    </a>
+                </div>
+                <div class="col-md-3 text-center">
+                    <a href="#" class="btn btn-outline-secondary w-100 mb-2" onclick="window.print()">
+                        <i class="fas fa-print"></i> Print Report
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

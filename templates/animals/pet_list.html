@@ -3,9 +3,20 @@
 {% block content %}
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>🐕 Pet Management</h1>
-        <a href="{% url 'pet_add' %}" class="btn btn-success">+ Add New Pet</a>
+        <h1><i class="fas fa-dog"></i> Pet Management</h1>
+        {% if not is_vet %}
+        <a href="{% url 'pet_add' %}" class="btn btn-success">
+            <i class="fas fa-plus"></i> Add New Pet
+        </a>
+        {% endif %}
     </div>
+
+    {% if is_vet %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i> You are logged in as a <strong>Veterinarian</strong>.
+        You can view pet information and manage medical records.
+    </div>
+    {% endif %}
 
     <div class="card">
         <div class="card-body">
@@ -17,8 +28,9 @@
                             <th>Name</th>
                             <th>Species</th>
                             <th>Breed</th>
-                            <th>Age</th>
+                            <th>Age (months)</th>
                             <th>Status</th>
+                            <th>Medical</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -29,21 +41,24 @@
                             <td><strong>{{ pet.name }}</strong></td>
                             <td>{{ pet.species }}</td>
                             <td>{{ pet.breed|default:"-" }}</td>
-                            <td>{{ pet.age }} mo</td>
+                            <td>{{ pet.age }}</td>
                             <td>
-                                <span class="badge {% if pet.status == 'Available' %}bg-success{% else %}bg-warning{% endif %}">
-                                    {{ pet.status }}
-                                </span>
+                                <span class="badge bg-success">{{ pet.status }}</span>
+                            </td>
+                            <td>
+                                {% if pet.medical_notes %}
+                                <i class="fas fa-notes-medical text-warning"></i>
+                                {% else %}
+                                <i class="fas fa-check-circle text-success"></i>
+                                {% endif %}
                             </td>
                             <td>
                                 <a href="{% url 'pet_detail' pet.pet_id %}" class="btn btn-sm btn-info">View</a>
-                                <a href="{% url 'pet_edit' pet.pet_id %}" class="btn btn-sm btn-warning">Edit</a>
-                                <a href="{% url 'pet_delete' pet.pet_id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="7" class="text-center">No pets found. <a href="{% url 'pet_add' %}">Add your first pet</a></td>
+                            <td colspan="8" class="text-center">No pets found.</td>
                         </tr>
                         {% endfor %}
                     </tbody>

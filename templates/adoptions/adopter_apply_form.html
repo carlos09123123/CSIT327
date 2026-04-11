@@ -4,35 +4,69 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
+            <div class="card shadow">
                 <div class="card-header bg-primary text-white">
-                    <h3>Apply for Adoption: {{ pet.name }}</h3>
+                    <h3 class="mb-0"><i class="fas fa-paw"></i> Apply for Adoption: {{ pet.name }}</h3>
                 </div>
                 <div class="card-body">
                     <div class="alert alert-info">
-                        <strong>Pet Details:</strong><br>
-                        Species: {{ pet.species }}<br>
-                        Breed: {{ pet.breed|default:"Mixed" }}<br>
-                        Age: {{ pet.age }} months<br>
-                        Size: {{ pet.size }}<br>
-                        Color: {{ pet.color }}
+                        <strong><i class="fas fa-info-circle"></i> Pet Details:</strong><br>
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <strong>Species:</strong> {{ pet.species }}<br>
+                                <strong>Breed:</strong> {{ pet.breed|default:"Mixed" }}<br>
+                                <strong>Age:</strong> {{ pet.age }} months
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Size:</strong> {{ pet.size }}<br>
+                                <strong>Color:</strong> {{ pet.color }}<br>
+                                <strong>Status:</strong> <span class="badge bg-success">Available</span>
+                            </div>
+                        </div>
                     </div>
 
                     <form method="post">
                         {% csrf_token %}
                         <div class="mb-3">
-                            <label class="form-label">Additional Notes (Optional)</label>
+                            <label class="form-label"><i class="fas fa-comment"></i> Additional Notes (Optional)</label>
                             <textarea name="notes" class="form-control" rows="4"
                                       placeholder="Tell us why you would like to adopt this pet..."></textarea>
                         </div>
-                        <div class="alert alert-warning">
-                            <i class="fas fa-info-circle"></i>
-                            By submitting this application, you agree to the adoption terms and conditions.
-                            A staff member will review your application and contact you for an interview.
+
+                        <!-- WAIVER CHECKBOX WITH VIEW LINK -->
+                        <div class="card mb-3 border-warning">
+                            <div class="card-header bg-warning">
+                                <strong><i class="fas fa-file-contract"></i> Adoption Agreement</strong>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-check mb-3">
+                                    <input type="checkbox" class="form-check-input" id="agree_terms" name="agree_terms" required>
+                                    <label class="form-check-label" for="agree_terms">
+                                        I have read and agree to the
+                                        <a href="{% url 'terms_waiver' %}" target="_blank" class="text-primary fw-bold">
+                                            <i class="fas fa-file-contract"></i> Adoption Waiver and Terms of Service
+                                        </a>.
+                                    </label>
+                                </div>
+                                <div class="alert alert-warning small mb-0">
+                                    <i class="fas fa-info-circle"></i> <strong>By checking this box, you acknowledge that:</strong>
+                                    <ul class="mb-0 mt-1">
+                                        <li>You have read and understand the adoption terms and conditions</li>
+                                        <li>The information you provided is true and accurate</li>
+                                        <li>You agree to be bound by these terms</li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
+                        <!-- END WAIVER CHECKBOX -->
+
                         <div class="text-end">
-                            <a href="{% url 'adopter_dashboard' %}" class="btn btn-secondary">Cancel</a>
-                            <button type="submit" class="btn btn-primary">Submit Application</button>
+                            <a href="{% url 'adopter_dashboard' %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i> Submit Application
+                            </button>
                         </div>
                     </form>
                 </div>
