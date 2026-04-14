@@ -51,6 +51,7 @@ Password: admin123
 
 🔹 Step 5: Start the Server
 python manage.py runserver 8080
+
 🔹 Step 6: Open in Browser
 
 Go to:
