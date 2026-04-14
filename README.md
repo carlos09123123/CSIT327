@@ -1,4 +1,4 @@
-🐾 Animal Shelter Adoption & Rescue System
+<img width="1917" height="962" alt="image" src="https://github.com/user-attachments/assets/51d203dc-365b-4378-a59e-9b495d4671a0" />🐾 Animal Shelter Adoption & Rescue System
 
 📋 Project Overview
 
@@ -7,8 +7,8 @@ The Animal Shelter Adoption & Rescue System is a comprehensive web-based platfor
 
 Quick Start Commands
 
-Step 1: Activate Virtual Environment
-Windows (PowerShell):
+**Step 1: Activate Virtual Environment
+Windows (PowerShell):**
 
 powershell
 venv\Scripts\Activate.ps1
@@ -17,7 +17,7 @@ Windows (Command Prompt):
 cmd
 venv\Scripts\activate.bat
 
-Step 2: Install Dependencies (First Time Only)
+**Step 2: Install Dependencies (First Time Only)
 bash
 pip install -r requirements.txt
 Or install manually:
@@ -26,11 +26,11 @@ bash
 pip install django
 pip install Pillow
 
-Step 3: Run Migrations
+**Step 3: Run Migrations**
 bash
 python manage.py migrate
 
-Step 4: Create Superuser (Admin Account)
+**Step 4: Create Superuser (Admin Account)**
 bash
 python manage.py createsuperuser
 Follow the prompts:
@@ -40,19 +40,19 @@ Username: admin
 Email: admin@example.com
 Password: admin123
 
-Step 5: Start the Server
+**Step 5: Start the Server**
 bash
 python manage.py runserver 8080
 
-Step 6: Open Browser
+**Step 6: Open Browser**
 Go to: http://127.0.0.1:8080/
 
-Step 8: Login
+**Step 8: Login**
 Staff/Admin: Username admin, Password admin123
 
 Adopter: Use your registered email and password
 
-🛠️ Technologies Used
+**🛠️** Technologies Used****
 Backend Framework: Django 6.0.4
 
 Database: MySQL / SQLite3
