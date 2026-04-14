@@ -7,7 +7,7 @@ The Animal Shelter Adoption & Rescue System is a comprehensive web-based platfor
 
 Quick Start Commands
 
-**Step 1: Activate Virtual Environment
+**Step 1: Activate Virtual Environment**
 Windows (PowerShell):**
 
 powershell
@@ -17,7 +17,7 @@ Windows (Command Prompt):
 cmd
 venv\Scripts\activate.bat
 
-**Step 2: Install Dependencies (First Time Only)
+**Step 2: Install Dependencies (First Time Only)**
 bash
 pip install -r requirements.txt
 Or install manually:
@@ -52,7 +52,7 @@ Staff/Admin: Username admin, Password admin123
 
 Adopter: Use your registered email and password
 
-**🛠️** Technologies Used****
+🛠️ Technologies Used
 Backend Framework: Django 6.0.4
 
 Database: MySQL / SQLite3
