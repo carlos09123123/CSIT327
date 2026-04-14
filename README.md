@@ -1,4 +1,4 @@
-<img width="1917" height="962" alt="image" src="https://github.com/user-attachments/assets/51d203dc-365b-4378-a59e-9b495d4671a0" />🐾 Animal Shelter Adoption & Rescue System
+🐾 Animal Shelter Adoption & Rescue System
 
 📋 Project Overview
 
