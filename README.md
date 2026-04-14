@@ -1,65 +1,69 @@
 🐾 Animal Shelter Adoption & Rescue System
-
 📋 Project Overview
 
-The Animal Shelter Adoption & Rescue System is a comprehensive web-based platform designed to manage an animal shelter's daily operations. The system helps track pets, adopters, staff members, medical records, foster assignments, and adoption processes, ensuring that animals are properly cared for and placed in loving homes safely.
+The Animal Shelter Adoption & Rescue System is a comprehensive web-based platform designed to manage an animal shelter's daily operations.
 
+This system helps track:
 
-Quick Start Commands
+🐶 Pets
+👤 Adopters
+🧑‍⚕️ Staff members
+💉 Medical records
+🏠 Foster assignments
+📄 Adoption processes
 
-Step 1: Activate Virtual Environment
-Windows (PowerShell):**
+It ensures that animals are properly cared for and placed in loving homes safely.
 
-powershell
+🚀 Quick Start Guide
+🔹 Step 1: Activate Virtual Environment
+
+Windows (PowerShell):
+
 venv\Scripts\Activate.ps1
+
 Windows (Command Prompt):
 
-cmd
 venv\Scripts\activate.bat
+🔹 Step 2: Install Dependencies (First Time Only)
 
-Step 2: Install Dependencies (First Time Only)
-bash
+Using requirements file:
+
 pip install -r requirements.txt
+
 Or install manually:
 
-bash
 pip install django
 pip install Pillow
-
-Step 3: Run Migrations
-bash
+🔹 Step 3: Run Migrations
 python manage.py migrate
-
-Step 4: Create Superuser (Admin Account)
-bash
+🔹 Step 4: Create Superuser (Admin Account)
 python manage.py createsuperuser
+
 Follow the prompts:
 
-text
 Username: admin
 Email: admin@example.com
 Password: admin123
-
-Step 5: Start the Server
-bash
+🔹 Step 5: Start the Server
 python manage.py runserver 8080
+🔹 Step 6: Open in Browser
 
-Step 6: Open Browser
-Go to: http://127.0.0.1:8080/
+Go to:
 
-Step 8: Login
-Staff/Admin: Username admin, Password admin123
+http://127.0.0.1:8080/
+🔹 Step 7: Login Credentials
 
-Adopter: Use your registered email and password
+Admin / Staff:
 
+Username: admin
+Password: admin123
+
+Adopter:
+
+Use your registered email and password
 🛠️ Technologies Used
 Backend Framework: Django 6.0.4
-
 Database: MySQL / SQLite3
-
 Frontend: HTML5, CSS3, Bootstrap 5
-
-Languages: Python 3.14
-
-Authentication: Django's built-in authentication system with custom Staff model
-
+Language: Python 3.14
+Authentication: Django built-in authentication system with custom Staff model
