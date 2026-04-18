@@ -17,7 +17,7 @@ def index(request):
         'pending_applications': pending_applications,
         'recent_checkins': recent_checkins,
     }
-# F
+    return render(request, 'fostering/index.html', context)
 
 # Foster Views
 @login_required
@@ -35,7 +35,7 @@ def foster_add(request):
             return redirect('foster_detail', pk=foster.foster_id)
     else:
         form = FosterForm()
-    return render(request, 'fostering/foster_form.html', {'form': form, 'title': 'Add Foster'})
+    return render(request, 'fostering/addNewFoster.html', {'form': form, 'title': 'Add Foster'})
 
 @login_required
 def foster_detail(request, pk):

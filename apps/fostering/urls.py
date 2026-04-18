@@ -6,7 +6,7 @@ urlpatterns = [
 
     # Foster URLs
     path('fosters/', views.foster_list, name='foster_list'),
-    path('fosters/add/', views.foster_add, name='foster_add'),
+    path('addNewFoster/', views.foster_add, name='foster_add'),
     path('fosters/<int:pk>/', views.foster_detail, name='foster_detail'),
     path('fosters/<int:pk>/edit/', views.foster_edit, name='foster_edit'),
     path('fosters/<int:pk>/delete/', views.foster_delete, name='foster_delete'),
