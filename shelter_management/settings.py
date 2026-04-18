@@ -58,19 +58,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'shelter_management.wsgi.application'
 
-# ==================== DATABASE CONFIGURATION (MySQL Workbench) ====================
+# ==================== DATABASE CONFIGURATION (SQLite) ====================
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'shelter_db',           # The database you created in MySQL Workbench
-        'USER': 'root',                  # Your MySQL username (usually 'root')
-        'PASSWORD': '123456', # ⚠️ CHANGE THIS to your MySQL password!
-        'HOST': '127.0.0.1',             # Localhost
-        'PORT': '3306',                  # MySQL default port
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'charset': 'utf8mb4',
-        },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 # ==================================================================================
