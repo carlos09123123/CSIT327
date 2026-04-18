@@ -5,7 +5,6 @@ from django.core.exceptions import PermissionDenied
 from django.db.models import Count
 from datetime import date, timedelta
 from .models import Pet, MedicalRecord, Vaccination, Veterinary
-from apps.accounts.models import Staff
 
 
 # ==================== HELPER FUNCTIONS ====================
@@ -309,11 +308,6 @@ def vet_list(request):
     from apps.accounts.models import Staff
     vets = Staff.objects.filter(role='Vet', status=True)
 
-    # Debug output
-    print(f"Veterinarians found in staff table: {vets.count()}")
-    for vet in vets:
-        print(f"  - {vet.first_name} {vet.last_name} ({vet.email}) - Role: {vet.role}")
-
     return render(request, 'animals/vet_list.html', {'vets': vets})
 
 
@@ -325,7 +319,6 @@ def vet_add(request):
         raise PermissionDenied("Only staff can add veterinarians.")
 
     if request.method == 'POST':
-        # This adds to Veterinary table (professional records)
         Veterinary.objects.create(
             full_name=request.POST.get('full_name'),
             clinic_name=request.POST.get('clinic_name'),

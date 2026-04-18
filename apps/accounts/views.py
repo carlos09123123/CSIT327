@@ -5,7 +5,6 @@ from django.contrib import messages
 from django.contrib.auth.hashers import make_password
 from django.views.decorators.csrf import csrf_protect
 from django.core.exceptions import PermissionDenied
-from datetime import date, timedelta
 from .models import Staff
 
 
@@ -83,16 +82,15 @@ def logout_view(request):
     return redirect('login')
 
 
-# ==================== INDEX / DASHBOARD (Role-based) ====================
+# ==================== INDEX / DASHBOARD ====================
 @login_required
 def index(request):
-    """Dashboard based on user role"""
-    from apps.animals.models import Pet, MedicalRecord, Vaccination
+    """Dashboard - shows statistics based on user role"""
+    from apps.animals.models import Pet
     from apps.adoptions.models import Adoption, AdoptionApplication
     from apps.fostering.models import FosterAssignment
     from apps.shelter.models import ShelterBranch
 
-    # Common context for all users
     context = {
         'user': request.user,
         'total_pets': Pet.objects.count(),
@@ -103,22 +101,11 @@ def index(request):
         'total_fosters': FosterAssignment.objects.filter(status='Active').count(),
         'total_staff': Staff.objects.count(),
         'total_shelters': ShelterBranch.objects.count(),
-        'recent_pets': Pet.objects.all().order_by('-intake_date')[:5],
     }
-
-    # Add vet-specific data
-    if request.user.role == 'Vet':
-        today = date.today()
-        context['pending_medical'] = MedicalRecord.objects.filter(visit_date__isnull=True).count()
-        context['upcoming_vaccinations'] = Vaccination.objects.filter(
-            next_due_date__gte=today,
-            next_due_date__lte=today + timedelta(days=30)
-        ).count()
-
     return render(request, 'index.html', context)
 
 
-# ==================== STAFF MANAGEMENT (ADMIN ONLY) ====================
+# ==================== STAFF MANAGEMENT ====================
 @login_required
 @admin_required
 def register_staff(request):
@@ -197,7 +184,7 @@ def staff_delete(request, pk):
     return render(request, 'accounts/staff_confirm_delete.html', {'staff': staff_member})
 
 
-# ==================== PROFILE MANAGEMENT (ALL STAFF) ====================
+# ==================== PROFILE MANAGEMENT ====================
 @login_required
 def profile(request):
     return render(request, 'accounts/profile.html', {'user': request.user})

@@ -2,10 +2,38 @@
 
 {% block content %}
 <div class="container">
-    <h1>Animals Management</h1>
-    <p>This page will manage pets, medical records, and vaccinations.</p>
-    <div class="alert alert-info">
-        <strong>Coming Soon!</strong> This feature is under development.
+    <h1 class="mb-4">Pets Management</h1>
+    <a href="{% url 'pet_add' %}" class="btn btn-primary mb-3">Add New Pet</a>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Species</th>
+                    <th>Breed</th>
+                    <th>Age</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pet in pets %}
+                <tr>
+                    <td>{{ pet.pet_id }}</td
+                    <td>{{ pet.name }}</td
+                    <td>{{ pet.species }}</td
+                    <td>{{ pet.breed|default:"-" }}</td
+                    <td>{{ pet.age }} months</td
+                    <td>{{ pet.status }}</td
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">No pets found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}

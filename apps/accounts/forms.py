@@ -1,33 +1,34 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth import get_user_model
+from .models import Pet
 
-Staff = get_user_model()
-
-
-class StaffRegistrationForm(UserCreationForm):
-    email = forms.EmailField(required=True)
-    first_name = forms.CharField(required=True, max_length=100)
-    last_name = forms.CharField(required=True, max_length=100)
-    phone = forms.CharField(required=False, max_length=20)
-    role = forms.ChoiceField(choices=Staff.ROLE_CHOICES, required=True)
-
+class PetForm(forms.ModelForm):
     class Meta:
-        model = Staff
-        fields = ('username', 'email', 'first_name', 'last_name', 'phone', 'role', 'password1', 'password2')
-
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        user.email = self.cleaned_data['email']
-        user.first_name = self.cleaned_data['first_name']
-        user.last_name = self.cleaned_data['last_name']
-        user.phone = self.cleaned_data['phone']
-        user.role = self.cleaned_data['role']
-        if commit:
-            user.save()
-        return user
-
-
-class StaffLoginForm(AuthenticationForm):
-    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Username'}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}))
+        model = Pet
+        fields = ['name', 'species', 'breed', 'age', 'sex', 'size', 'color',
+                  'vaccination_status', 'spay_neuter_status', 'medical_notes', 'status']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'species': forms.Select(attrs={'class': 'form-select'}),
+            'breed': forms.TextInput(attrs={'class': 'form-control'}),
+            'age': forms.NumberInput(attrs={'class': 'form-control'}),
+            'sex': forms.Select(attrs={'class': 'form-select'}),
+            'size': forms.Select(attrs={'class': 'form-select'}),
+            'color': forms.TextInput(attrs={'class': 'form-control'}),
+            'vaccination_status': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'spay_neuter_status': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'medical_notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'status': forms.Select(attrs={'class': 'form-select'}),
+        }
+        labels = {
+            'name': 'Pet Name',
+            'species': 'Species',
+            'breed': 'Breed',
+            'age': 'Age (months)',
+            'sex': 'Sex',
+            'size': 'Size',
+            'color': 'Color',
+            'vaccination_status': 'Vaccinated',
+            'spay_neuter_status': 'Spayed/Neutered',
+            'medical_notes': 'Medical Notes',
+            'status': 'Status',
+        }
