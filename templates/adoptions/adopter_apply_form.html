@@ -6,12 +6,12 @@
         <div class="col-md-8">
             <div class="card shadow">
                 <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0"><i class="fas fa-paw"></i> Apply for Adoption: {{ pet.name }}</h3>
+                    <h3><i class="fas fa-paw"></i> Apply for Adoption: {{ pet.name }}</h3>
                 </div>
                 <div class="card-body">
                     <div class="alert alert-info">
-                        <strong><i class="fas fa-info-circle"></i> Pet Details:</strong><br>
-                        <div class="row mt-2">
+                        <h5><i class="fas fa-info-circle"></i> Pet Details:</h5>
+                        <div class="row">
                             <div class="col-md-6">
                                 <strong>Species:</strong> {{ pet.species }}<br>
                                 <strong>Breed:</strong> {{ pet.breed|default:"Mixed" }}<br>
@@ -33,7 +33,7 @@
                                       placeholder="Tell us why you would like to adopt this pet..."></textarea>
                         </div>
 
-                        <!-- WAIVER CHECKBOX WITH VIEW LINK -->
+                        <!-- WAIVER CHECKBOX -->
                         <div class="card mb-3 border-warning">
                             <div class="card-header bg-warning">
                                 <strong><i class="fas fa-file-contract"></i> Adoption Agreement</strong>
@@ -58,10 +58,9 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- END WAIVER CHECKBOX -->
 
                         <div class="text-end">
-                            <a href="{% url 'adopter_dashboard' %}" class="btn btn-secondary">
+                            <a href="{% url 'adopter_apply_list' %}" class="btn btn-secondary">
                                 <i class="fas fa-times"></i> Cancel
                             </a>
                             <button type="submit" class="btn btn-primary">

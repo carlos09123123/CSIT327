@@ -4,28 +4,34 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
+            <div class="card shadow">
                 <div class="card-header bg-warning">
-                    <h3><i class="fas fa-edit"></i> Edit Profile</h3>
+                    <h3><i class="fas fa-user-edit"></i> Edit Profile</h3>
                 </div>
                 <div class="card-body">
                     <form method="post">
                         {% csrf_token %}
-                        <div class="mb-3">
-                            <label class="form-label">First Name</label>
-                            <input type="text" name="first_name" class="form-control" value="{{ user.first_name }}" required>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">First Name</label>
+                                <input type="text" name="first_name" class="form-control" value="{{ user.first_name }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Last Name</label>
+                                <input type="text" name="last_name" class="form-control" value="{{ user.last_name }}" required>
+                            </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Last Name</label>
-                            <input type="text" name="last_name" class="form-control" value="{{ user.last_name }}" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
+                            <label class="form-label">Email Address</label>
                             <input type="email" name="email" class="form-control" value="{{ user.email }}" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Phone</label>
-                            <input type="text" name="phone" class="form-control" value="{{ user.phone }}">
+                            <label class="form-label">Phone Number</label>
+                            <input type="text" name="phone" class="form-control" value="{{ user.phone|default:'' }}">
+                        </div>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            To change your password, go to <a href="{% url 'change_password' %}">Change Password</a>.
                         </div>
                         <div class="text-end">
                             <a href="{% url 'profile' %}" class="btn btn-secondary">Cancel</a>

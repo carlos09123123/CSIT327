@@ -1,15 +1,25 @@
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 from apps.accounts import views as accounts_views
+from apps.adoptions import views as adoption_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', accounts_views.index, name='index'),
     path('login/', accounts_views.login_view, name='login'),
     path('logout/', accounts_views.logout_view, name='logout'),
+    path('register/', adoption_views.adopter_register, name='adopter_register'),
+    path('adopter-dashboard/', adoption_views.adopter_dashboard, name='adopter_dashboard'),
+
+    # App URLs
     path('animals/', include('apps.animals.urls')),
     path('shelter/', include('apps.shelter.urls')),
     path('fostering/', include('apps.fostering.urls')),
     path('adoptions/', include('apps.adoptions.urls')),
     path('accounts/', include('apps.accounts.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

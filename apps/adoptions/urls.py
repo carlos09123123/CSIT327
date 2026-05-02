@@ -10,8 +10,13 @@ urlpatterns = [
     path('apply/<int:pet_id>/', views.adopter_apply, name='adopter_apply'),
     path('apply-list/', views.adopter_apply_list, name='adopter_apply_list'),
 
+    # Adopter Profile Management
+    path('profile/', views.adopter_profile, name='adopter_profile'),
+    path('profile/edit/', views.adopter_profile_edit, name='adopter_profile_edit'),
+    path('change-password/', views.adopter_change_password, name='adopter_change_password'),
+
     # Terms and Waiver
-    path('terms-waiver/', views.terms_waiver, name='terms_waiver'),  # ADD THIS LINE
+    path('terms-waiver/', views.terms_waiver, name='terms_waiver'),
 
     # Staff-only sections
     path('', views.adoption_list, name='adoption_list'),

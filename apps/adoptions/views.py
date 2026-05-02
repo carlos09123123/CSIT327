@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_protect
 from django.db.models import Sum
+from datetime import datetime
 from .models import Adopter, AdoptionApplication, Interview, HomeVisit, Adoption, Payment
 from .forms import AdopterRegistrationForm
 from apps.animals.models import Pet
@@ -50,14 +51,14 @@ def adopter_dashboard(request):
 
     context = {
         'adopter': adopter,
+        'user_name': request.session.get('user_name', f"{adopter.first_name} {adopter.last_name}"),
+        'user_email': request.session.get('user_email', adopter.email),
+        'session_login_time': request.session.get('login_time', 'Just now'),
         'available_pets': available_pets,
         'applications': applications,
     }
-    return render(request, 'adoptions/adopter_dashboard.html', context)
+    return render(request, 'index.html', context)
 
-def terms_waiver(request):
-    """Display the adoption waiver and terms of service"""
-    return render(request, 'adoptions/terms_waiver.html')
 
 # ==================== ADOPTER APPLICATION ACTIONS ====================
 @csrf_protect
@@ -73,18 +74,18 @@ def adopter_apply(request, pet_id):
     # Check if pet is available
     if pet.status != 'Available':
         messages.error(request, f'{pet.name} is no longer available for adoption.')
-        return redirect('adopter_dashboard')
+        return redirect('adopter_apply_list')
 
     # Check if adopter has too many pending applications (max 3)
     pending_count = AdoptionApplication.objects.filter(adopter=adopter, status='Pending').count()
     if pending_count >= 3:
         messages.error(request, 'You already have 3 pending applications. Please wait for them to be processed.')
-        return redirect('adopter_dashboard')
+        return redirect('adopter_apply_list')
 
     # Check if already applied for this pet
     if AdoptionApplication.objects.filter(adopter=adopter, pet=pet).exists():
         messages.error(request, f'You have already applied for {pet.name}.')
-        return redirect('adopter_dashboard')
+        return redirect('adopter_apply_list')
 
     if request.method == 'POST':
         # Check if user agreed to terms (waiver)
@@ -126,6 +127,94 @@ def adopter_apply_list(request):
         'applied_pet_ids': applied_pet_ids,
     }
     return render(request, 'adoptions/adopter_apply_list.html', context)
+
+
+# ==================== ADOPTER PROFILE MANAGEMENT ====================
+def adopter_profile(request):
+    """View adopter profile"""
+    if 'adopter_id' not in request.session:
+        messages.error(request, 'Please login first.')
+        return redirect('login')
+
+    try:
+        adopter = Adopter.objects.get(adopter_id=request.session['adopter_id'])
+    except Adopter.DoesNotExist:
+        messages.error(request, 'Adopter not found.')
+        return redirect('login')
+
+    return render(request, 'adoptions/adopter_profile.html', {'adopter': adopter})
+
+
+def adopter_profile_edit(request):
+    """Edit adopter profile"""
+    if 'adopter_id' not in request.session:
+        messages.error(request, 'Please login first.')
+        return redirect('login')
+
+    try:
+        adopter = Adopter.objects.get(adopter_id=request.session['adopter_id'])
+    except Adopter.DoesNotExist:
+        messages.error(request, 'Adopter not found.')
+        return redirect('login')
+
+    if request.method == 'POST':
+        adopter.first_name = request.POST.get('first_name')
+        adopter.last_name = request.POST.get('last_name')
+        adopter.email = request.POST.get('email')
+        adopter.phone = request.POST.get('phone')
+        adopter.address = request.POST.get('address')
+        adopter.occupation = request.POST.get('occupation')
+        adopter.has_other_pets = request.POST.get('has_other_pets') == 'on'
+        adopter.has_children = request.POST.get('has_children') == 'on'
+        adopter.save()
+
+        # Update session with new name
+        request.session['adopter_name'] = f"{adopter.first_name} {adopter.last_name}"
+        request.session['user_name'] = f"{adopter.first_name} {adopter.last_name}"
+        request.session['user_email'] = adopter.email
+
+        messages.success(request, 'Profile updated successfully!')
+        return redirect('adopter_profile')
+
+    return render(request, 'adoptions/adopter_profile_edit.html', {'adopter': adopter})
+
+
+def adopter_change_password(request):
+    """Change adopter password"""
+    if 'adopter_id' not in request.session:
+        messages.error(request, 'Please login first.')
+        return redirect('login')
+
+    try:
+        adopter = Adopter.objects.get(adopter_id=request.session['adopter_id'])
+    except Adopter.DoesNotExist:
+        messages.error(request, 'Adopter not found.')
+        return redirect('login')
+
+    if request.method == 'POST':
+        current = request.POST.get('current_password')
+        new = request.POST.get('new_password')
+        confirm = request.POST.get('confirm_password')
+
+        if not adopter.check_password(current):
+            messages.error(request, 'Current password is incorrect.')
+        elif new != confirm:
+            messages.error(request, 'New passwords do not match.')
+        elif len(new) < 8:
+            messages.error(request, 'Password must be at least 8 characters.')
+        else:
+            adopter.set_password(new)
+            adopter.save()
+            messages.success(request, 'Password changed successfully! Please login again.')
+            return redirect('login')
+
+    return render(request, 'adoptions/adopter_change_password.html', {'adopter': adopter})
+
+
+# ==================== TERMS AND WAIVER ====================
+def terms_waiver(request):
+    """Display the adoption waiver and terms of service"""
+    return render(request, 'adoptions/terms_waiver.html')
 
 
 # ==================== ADOPTION MANAGEMENT (STAFF ONLY) ====================

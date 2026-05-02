@@ -4,143 +4,190 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">
-                        <i class="fas fa-user-plus"></i> Register as Adopter
-                    </h3>
-                    <p class="mb-0">Create an account to start your adoption journey</p>
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-gradient-primary text-white text-center py-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <i class="fas fa-paw fa-3x mb-2"></i>
+                    <h3 class="mb-0">Create an Account</h3>
+                    <p class="mb-0 mt-2 opacity-75">Join our shelter family and give a pet a loving home</p>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show rounded-3">
+                                <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %} me-2"></i>
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
                     <form method="post">
                         {% csrf_token %}
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="id_first_name" class="form-label">First Name *</label>
+                                <label class="form-label fw-semibold">
+                                    <i class="fas fa-user text-primary me-1"></i> First Name *
+                                </label>
                                 {{ form.first_name }}
                                 {% if form.first_name.errors %}
-                                    <div class="text-danger small">{{ form.first_name.errors }}</div>
+                                    <div class="text-danger small mt-1">{{ form.first_name.errors }}</div>
                                 {% endif %}
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="id_last_name" class="form-label">Last Name *</label>
+                                <label class="form-label fw-semibold">
+                                    <i class="fas fa-user text-primary me-1"></i> Last Name *
+                                </label>
                                 {{ form.last_name }}
                                 {% if form.last_name.errors %}
-                                    <div class="text-danger small">{{ form.last_name.errors }}</div>
+                                    <div class="text-danger small mt-1">{{ form.last_name.errors }}</div>
                                 {% endif %}
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="id_email" class="form-label">Email Address *</label>
+                                <label class="form-label fw-semibold">
+                                    <i class="fas fa-envelope text-primary me-1"></i> Email Address *
+                                </label>
                                 {{ form.email }}
                                 {% if form.email.errors %}
-                                    <div class="text-danger small">{{ form.email.errors }}</div>
+                                    <div class="text-danger small mt-1">{{ form.email.errors }}</div>
                                 {% endif %}
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="id_phone" class="form-label">Phone Number *</label>
+                                <label class="form-label fw-semibold">
+                                    <i class="fas fa-phone text-primary me-1"></i> Phone Number *
+                                </label>
                                 {{ form.phone }}
                                 {% if form.phone.errors %}
-                                    <div class="text-danger small">{{ form.phone.errors }}</div>
+                                    <div class="text-danger small mt-1">{{ form.phone.errors }}</div>
                                 {% endif %}
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="id_address" class="form-label">Address *</label>
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-home text-primary me-1"></i> Address *
+                            </label>
                             {{ form.address }}
                             {% if form.address.errors %}
-                                <div class="text-danger small">{{ form.address.errors }}</div>
+                                <div class="text-danger small mt-1">{{ form.address.errors }}</div>
                             {% endif %}
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="id_date_of_birth" class="form-label">Date of Birth *</label>
+                                <label class="form-label fw-semibold">
+                                    <i class="fas fa-calendar text-primary me-1"></i> Date of Birth *
+                                </label>
                                 {{ form.date_of_birth }}
-                                <small class="text-muted">You must be at least 18 years old</small>
+                                <small class="text-muted d-block mt-1">You must be at least 18 years old</small>
                                 {% if form.date_of_birth.errors %}
-                                    <div class="text-danger small">{{ form.date_of_birth.errors }}</div>
+                                    <div class="text-danger small mt-1">{{ form.date_of_birth.errors }}</div>
                                 {% endif %}
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="id_occupation" class="form-label">Occupation</label>
+                                <label class="form-label fw-semibold">
+                                    <i class="fas fa-briefcase text-primary me-1"></i> Occupation
+                                </label>
                                 {{ form.occupation }}
                                 {% if form.occupation.errors %}
-                                    <div class="text-danger small">{{ form.occupation.errors }}</div>
+                                    <div class="text-danger small mt-1">{{ form.occupation.errors }}</div>
                                 {% endif %}
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
                                 <div class="form-check">
                                     {{ form.has_other_pets }}
-                                    <label class="form-check-label" for="id_has_other_pets">
-                                        I have other pets at home
+                                    <label class="form-check-label" for="{{ form.has_other_pets.id_for_label }}">
+                                        <i class="fas fa-paw text-success me-1"></i> I have other pets at home
                                     </label>
                                 </div>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-6">
                                 <div class="form-check">
                                     {{ form.has_children }}
-                                    <label class="form-check-label" for="id_has_children">
-                                        I have children at home
+                                    <label class="form-check-label" for="{{ form.has_children.id_for_label }}">
+                                        <i class="fas fa-child text-info me-1"></i> I have children at home
                                     </label>
                                 </div>
                             </div>
                         </div>
 
-                        <hr>
+                        <hr class="my-4">
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="id_password" class="form-label">Password *</label>
-                                <input type="password" name="password" id="id_password" class="form-control" required>
+                                <label class="form-label fw-semibold">
+                                    <i class="fas fa-lock text-primary me-1"></i> Password *
+                                </label>
+                                <input type="password" name="password" id="id_password" class="form-control rounded-3" required>
                                 <small class="text-muted">Minimum 8 characters</small>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="id_confirm_password" class="form-label">Confirm Password *</label>
-                                <input type="password" name="confirm_password" id="id_confirm_password" class="form-control" required>
+                                <label class="form-label fw-semibold">
+                                    <i class="fas fa-check-circle text-primary me-1"></i> Confirm Password *
+                                </label>
+                                <input type="password" name="confirm_password" id="id_confirm_password" class="form-control rounded-3" required>
                             </div>
                         </div>
 
-                        {% if form.non_field_errors %}
-                            <div class="alert alert-danger">
-                                {% for error in form.non_field_errors %}
-                                    {{ error }}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle"></i>
-                            By registering, you agree to our adoption policies and terms of service.
+                        <div class="alert alert-warning rounded-3 mt-3">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>By registering, you agree to our:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>Adoption terms and conditions</li>
+                                <li>Privacy policy</li>
+                                <li>Home visit agreement</li>
+                            </ul>
                         </div>
 
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="fas fa-check-circle"></i> Register Account
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg rounded-3 py-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                                <i class="fas fa-check-circle me-2"></i> Register Account
                             </button>
-                            <a href="{% url 'login' %}" class="btn btn-outline-secondary">
-                                <i class="fas fa-arrow-left"></i> Back to Login
+                            <a href="{% url 'login' %}" class="btn btn-outline-secondary rounded-3 py-2">
+                                <i class="fas fa-arrow-left me-2"></i> Back to Login
                             </a>
                         </div>
                     </form>
                 </div>
             </div>
 
-            <div class="card mt-3">
-                <div class="card-body text-center">
-                    <p class="mb-0">
-                        <i class="fas fa-shield-alt"></i> Your information is secure and will only be used for adoption purposes.
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-body text-center py-3">
+                    <p class="mb-0 text-muted">
+                        <i class="fas fa-shield-alt me-2 text-success"></i>
+                        Your information is secure and will only be used for adoption purposes.
                     </p>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .form-control, .form-select {
+        border-radius: 10px;
+        border: 1px solid #e0e0e0;
+        padding: 10px 15px;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    .card {
+        border-radius: 20px;
+        overflow: hidden;
+    }
+    .btn {
+        font-weight: 600;
+    }
+</style>
 {% endblock %}

@@ -55,6 +55,11 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
+        .dropdown-header {
+            font-size: 0.75rem;
+            color: #6c757d;
+        }
+
         .card {
             border: none;
             border-radius: 15px;
@@ -106,25 +111,7 @@
             color: white;
         }
 
-        .table {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-        }
-
-        .table thead th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 12px;
-        }
-
-        .alert {
-            border-radius: 10px;
-            border: none;
-        }
-
-        footer {
+        .footer {
             background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
             color: white;
             padding: 20px;
@@ -150,6 +137,14 @@
         .dashboard-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 50px;
         }
 
         footer a {
@@ -273,7 +268,7 @@
                             </li>
                         {% endif %}
 
-                        <!-- ==================== COMMON USER DROPDOWN (Profile, Logout) ==================== -->
+                        <!-- ==================== USER DROPDOWN (Profile, Logout) ==================== -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
                                 <i class="fas fa-user-circle"></i> {{ user.username }}
@@ -285,6 +280,10 @@
                                 <li><a class="dropdown-item" href="{% url 'change_password' %}">
                                     <i class="fas fa-key"></i> Change Password
                                 </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li class="dropdown-header text-muted">
+                                    <small><i class="fas fa-clock"></i> Logged in: {{ session_login_time|default:"Just now" }}</small>
+                                </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="{% url 'logout' %}">
                                     <i class="fas fa-sign-out-alt"></i> Logout
@@ -305,8 +304,8 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'adopter_dashboard' %}">
-                                <i class="fas fa-file-alt"></i> My Applications
+                            <a class="nav-link" href="{% url 'adopter_profile' %}">
+                                <i class="fas fa-id-card"></i> My Profile
                             </a>
                         </li>
                         <li class="nav-item">

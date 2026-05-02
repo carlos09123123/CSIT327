@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3><i class="fas fa-id-card"></i> My Profile</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong><i class="fas fa-user"></i> Name:</strong> {{ adopter.first_name }} {{ adopter.last_name }}</p>
+                            <p><strong><i class="fas fa-envelope"></i> Email:</strong> {{ adopter.email }}</p>
+                            <p><strong><i class="fas fa-phone"></i> Phone:</strong> {{ adopter.phone|default:"Not provided" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong><i class="fas fa-home"></i> Address:</strong> {{ adopter.address|default:"Not provided" }}</p>
+                            <p><strong><i class="fas fa-briefcase"></i> Occupation:</strong> {{ adopter.occupation|default:"Not provided" }}</p>
+                            <p><strong><i class="fas fa-calendar-alt"></i> Registered:</strong> {{ adopter.registration_date|date:"F j, Y" }}</p>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <p><strong><i class="fas fa-paw"></i> Has Other Pets:</strong> {% if adopter.has_other_pets %}Yes{% else %}No{% endif %}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong><i class="fas fa-child"></i> Has Children:</strong> {% if adopter.has_children %}Yes{% else %}No{% endif %}</p>
+                        </div>
+                    </div>
+                    <div class="text-end mt-3">
+                        <a href="{% url 'adopter_profile_edit' %}" class="btn btn-warning">
+                            <i class="fas fa-edit"></i> Edit Profile
+                        </a>
+                        <a href="{% url 'adopter_change_password' %}" class="btn btn-info">
+                            <i class="fas fa-key"></i> Change Password
+                        </a>
+                        <a href="{% url 'adopter_dashboard' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
