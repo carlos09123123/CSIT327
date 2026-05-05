@@ -1,125 +1,216 @@
-{% extends 'base.html' %}
+{% extends '../base.html' %}
 
 {% block content %}
-<div class="container">
-    <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-            <h2 class="mb-0"><i class="fas fa-file-contract"></i> Adoption Waiver & Terms of Service</h2>
+<style>
+    :root {
+        --sand: #f5f0e8;
+        --cream: #fdfaf4;
+        --bark: #5c3d2e;
+        --bark-light: #7a5544;
+        --moss: #4a6741;
+        --clay: #c4714a;
+        --warm-gray: #9e8f82;
+        --border: #ddd4c4;
+    }
+
+    body {
+        background: #e8e0d4;
+        font-family: 'DM Sans', sans-serif;
+    }
+
+    .waiver-container {
+        max-width: 900px;
+        margin: 40px auto;
+    }
+
+    .waiver-card {
+        background: var(--cream);
+        border-radius: 18px;
+        box-shadow: 0 20px 60px rgba(92,61,46,0.2);
+        overflow: hidden;
+    }
+
+    .waiver-header {
+        background: var(--bark);
+        color: white;
+        padding: 25px;
+        text-align: center;
+    }
+
+    .waiver-header h2 {
+        font-family: 'DM Serif Display', serif;
+        margin: 0;
+    }
+
+    .waiver-body {
+        padding: 30px;
+    }
+
+    h4 {
+        color: var(--bark);
+        margin-top: 20px;
+        font-size: 18px;
+    }
+
+    p, li {
+        font-size: 14px;
+        color: var(--bark-light);
+    }
+
+    ul {
+        padding-left: 20px;
+    }
+
+    .alert {
+        border-radius: 10px;
+        font-size: 13px;
+    }
+
+    .alert-warning {
+        background: #fff4e5;
+        border-left: 4px solid var(--clay);
+    }
+
+    .alert-danger {
+        background: #fdecea;
+        border-left: 4px solid #b91c1c;
+    }
+
+    .alert-info {
+        background: #eef2ff;
+        border-left: 4px solid var(--moss);
+    }
+
+    .action-buttons {
+        margin-top: 30px;
+        text-align: center;
+    }
+
+    .btn-primary {
+        background: var(--moss);
+        border: none;
+        border-radius: 10px;
+    }
+
+    .btn-primary:hover {
+        background: #5c7f52;
+    }
+
+    .btn-secondary {
+        border-radius: 10px;
+    }
+
+    .footer-note {
+        background: var(--sand);
+        text-align: center;
+        padding: 10px;
+        font-size: 12px;
+        color: var(--warm-gray);
+    }
+</style>
+
+<div class="container waiver-container">
+    <div class="waiver-card">
+
+        <!-- Header -->
+        <div class="waiver-header">
+            <h2><i class="fas fa-file-contract"></i> Adoption Waiver</h2>
+            <small>Terms of Service & Agreement</small>
         </div>
-        <div class="card-body">
+
+        <!-- Body -->
+        <div class="waiver-body">
+
             <div class="alert alert-warning">
-                <i class="fas fa-exclamation-triangle"></i> <strong>Important:</strong> Please read this document carefully before submitting an adoption application.
+                <i class="fas fa-exclamation-triangle"></i>
+                Please read carefully before applying.
             </div>
 
-            <div class="row">
-                <div class="col-md-12">
-                    <h4 class="mt-3">1. Adoption Requirements</h4>
-                    <p>By applying to adopt a pet from our shelter, you confirm that:</p>
-                    <ul>
-                        <li>You are at least <strong>18 years of age</strong>.</li>
-                        <li>You have a <strong>stable home environment</strong> suitable for the pet.</li>
-                        <li>You have the <strong>financial means</strong> to provide proper care, including food, veterinary visits, and supplies.</li>
-                        <li>You understand that <strong>adoption is a lifelong commitment</strong> (10-20 years depending on the pet).</li>
-                        <li>All members of your household <strong>agree to the adoption</strong>.</li>
-                    </ul>
+            <h4>1. Adoption Requirements</h4>
+            <p>By applying, you confirm:</p>
+            <ul>
+                <li>At least <strong>18 years old</strong></li>
+                <li>Stable home environment</li>
+                <li>Financial capability for pet care</li>
+                <li>Adoption is a long-term commitment</li>
+                <li>Household agreement</li>
+            </ul>
 
-                    <h4>2. Pet Health Disclosure</h4>
-                    <p>The shelter provides all known medical history for each pet, including:</p>
-                    <ul>
-                        <li>Vaccination records</li>
-                        <li>Medical treatments received</li>
-                        <li>Known health conditions</li>
-                        <li>Spay/neuter status</li>
-                    </ul>
-                    <p class="text-warning">However, adopters acknowledge that there may be unknown health conditions and agree to have the pet examined by a licensed veterinarian within <strong>7 days of adoption</strong>.</p>
+            <h4>2. Pet Health Disclosure</h4>
+            <p>We provide known medical history including vaccinations and conditions.</p>
+            <p class="text-warning">Unknown conditions may exist. Vet check required within 7 days.</p>
 
-                    <h4>3. Adoption Fee</h4>
-                    <p>The adoption fee is <strong>non-refundable</strong> and covers:</p>
-                    <ul>
-                        <li>Spaying/neutering (if applicable)</li>
-                        <li>Initial vaccinations</li>
-                        <li>Microchipping</li>
-                        <li>Health check-up</li>
-                        <li>Deworming</li>
-                        <li>Flea/tick treatment</li>
-                    </ul>
+            <h4>3. Adoption Fee</h4>
+            <ul>
+                <li>Vaccination & health check</li>
+                <li>Spay/neuter</li>
+                <li>Microchip</li>
+                <li>Deworming & treatment</li>
+            </ul>
 
-                    <h4>4. Return Policy</h4>
-                    <p>If for any reason you cannot keep the adopted pet, you agree to:</p>
-                    <ul>
-                        <li><strong>Contact the shelter immediately</strong> at (032) 123-4567</li>
-                        <li><strong>Return the pet to the shelter</strong> (no questions asked)</li>
-                        <li><strong>Not sell, give away, or abandon the pet</strong></li>
-                        <li>Provide a <strong>written explanation</strong> for the return</li>
-                    </ul>
-                    <p>The shelter reserves the right to deny future adoptions to individuals who return pets without valid reason.</p>
+            <h4>4. Return Policy</h4>
+            <ul>
+                <li>Return pet to shelter only</li>
+                <li>No selling or abandonment</li>
+                <li>Provide reason for return</li>
+            </ul>
 
-                    <h4>5. Home Visit Agreement</h4>
-                    <p>You agree to:</p>
-                    <ul>
-                        <li>Allow a <strong>shelter representative</strong> to conduct a home visit</li>
-                        <li>Provide access to <strong>all areas</strong> where the pet will live</li>
-                        <li>Follow any <strong>recommendations</strong> made during the visit</li>
-                        <li>Schedule the visit within <strong>14 days</strong> of application approval</li>
-                    </ul>
+            <h4>5. Home Visit</h4>
+            <ul>
+                <li>Allow inspection</li>
+                <li>Follow recommendations</li>
+            </ul>
 
-                    <h4>6. Post-Adoption Follow-Up</h4>
-                    <p>You agree to:</p>
-                    <ul>
-                        <li>Provide <strong>updates and photos</strong> of the adopted pet</li>
-                        <li>Notify the shelter of <strong>any veterinary concerns</strong></li>
-                        <li>Keep the pet <strong>indoors or in a secure area</strong></li>
-                        <li>Provide <strong>proper identification</strong> (ID tag, microchip registration)</li>
-                    </ul>
+            <h4>6. Follow-Up</h4>
+            <ul>
+                <li>Provide updates/photos</li>
+                <li>Ensure safety and identification</li>
+            </ul>
 
-                    <h4>7. Liability Waiver</h4>
-                    <div class="alert alert-danger">
-                        <i class="fas fa-gavel"></i> <strong>Release of Liability:</strong><br>
-                        To the fullest extent permitted by law, you release the shelter, its employees, volunteers, and agents from any and all liability, claims, demands, actions, or causes of action whatsoever arising out of or related to any loss, damage, or injury, including death, that may be sustained by you, your family, your pets, or any third party resulting from the adoption.
-                    </div>
-
-                    <h4>8. Indemnification</h4>
-                    <p>You agree to <strong>indemnify and hold harmless</strong> the shelter from any claims, damages, or expenses arising from your adoption of the pet, including but not limited to:</p>
-                    <ul>
-                        <li>Property damage caused by the pet</li>
-                        <li>Injuries caused by the pet to any person or animal</li>
-                        <li>Violation of local animal ordinances</li>
-                    </ul>
-
-                    <h4>9. Acknowledgment</h4>
-                    <p>By checking the agreement box on the application form, you acknowledge that:</p>
-                    <ul>
-                        <li>You have <strong>read and understand</strong> this waiver and terms of service</li>
-                        <li>The information you provided is <strong>true and accurate</strong></li>
-                        <li>You agree to be <strong>bound by these terms</strong></li>
-                        <li>You understand that <strong>false information</strong> may result in application rejection</li>
-                        <li>You consent to the shelter <strong>contacting your references</strong></li>
-                    </ul>
-
-                    <h4>10. Governing Law</h4>
-                    <p>This agreement shall be governed by and construed in accordance with the laws of the Republic of the Philippines. Any disputes arising from this adoption shall be resolved exclusively in the courts of Cebu City.</p>
-
-                    <div class="alert alert-info mt-4">
-                        <i class="fas fa-info-circle"></i> <strong>Questions?</strong> Contact us:<br>
-                        📞 Phone: (032) 123-4567<br>
-                        📧 Email: <a href="mailto:shelter@example.com">shelter@example.com</a><br>
-                        📍 Address: 123 Animal Street, Cebu City, Philippines
-                    </div>
-
-                    <div class="text-center mt-4">
-                        <a href="javascript:history.back()" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left"></i> Go Back
-                        </a>
-                        <button onclick="window.print()" class="btn btn-primary">
-                            <i class="fas fa-print"></i> Print Waiver
-                        </button>
-                    </div>
-                </div>
+            <h4>7. Liability Waiver</h4>
+            <div class="alert alert-danger">
+                You release the shelter from any liability related to the adopted pet.
             </div>
+
+            <h4>8. Indemnification</h4>
+            <ul>
+                <li>Property damage</li>
+                <li>Injury caused by pet</li>
+            </ul>
+
+            <h4>9. Acknowledgment</h4>
+            <ul>
+                <li>You understand and agree to terms</li>
+                <li>Information is accurate</li>
+            </ul>
+
+            <h4>10. Governing Law</h4>
+            <p>Governed by laws of the Philippines (Cebu City jurisdiction).</p>
+
+            <div class="alert alert-info mt-4">
+                📞 (032) 123-4567<br>
+                📧 shelter@example.com<br>
+                📍 Cebu City, Philippines
+            </div>
+
+            <!-- Buttons -->
+            <div class="action-buttons">
+                <a href="javascript:history.back()" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+                <button onclick="window.print()" class="btn btn-primary">
+                    <i class="fas fa-print"></i> Print
+                </button>
+            </div>
+
         </div>
-        <div class="card-footer text-muted text-center">
-            Last Updated: April 11, 2026 | Version 2.0
+
+        <!-- Footer -->
+        <div class="footer-note">
+            Last Updated: April 11, 2026
         </div>
+
     </div>
 </div>
+
 {% endblock %}
