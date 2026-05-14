@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h3><i class="fas fa-check-circle"></i> Release from Quarantine</h3>
+                </div>
+                <div class="card-body text-center">
+                    <i class="fas fa-paw fa-4x text-success mb-3"></i>
+                    <h4>Release {{ pet.name }} from Quarantine?</h4>
+
+                    <div class="alert alert-info text-start">
+                        <strong>Quarantine Details:</strong><br>
+                        Start Date: {{ pet.quarantine_start_date }}<br>
+                        End Date: {{ pet.quarantine_end_date }}<br>
+                        Reason: {{ pet.quarantine_reason }}<br>
+                        Location: {{ pet.quarantine_location|default:"Not specified" }}
+                    </div>
+
+                    <p>Once released, this pet will become <strong>Available for Adoption</strong>.</p>
+                    <p class="text-warning">Make sure the pet has completed the full quarantine period and is healthy before releasing.</p>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="text-center">
+                            <a href="{% url 'pet_detail' pet.pet_id %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-check"></i> Yes, Release from Quarantine
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4"><i class="fas fa-chart-line"></i> Quarantine Dashboard</h1>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Currently in Quarantine</h5>
+                    <h2 class="mb-0">{{ total_quarantined }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card text-white bg-danger">
+                <div class="card-body">
+                    <h5 class="card-title">Overdue for Release</h5>
+                    <h2 class="mb-0">{{ overdue_pets|length }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Releasing Soon (3 days)</h5>
+                    <h2 class="mb-0">{{ soon_release|length }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overdue Pets Alert -->
+    {% if overdue_pets %}
+    <div class="alert alert-danger">
+        <i class="fas fa-exclamation-triangle"></i>
+        <strong>Attention:</strong> The following pets are overdue for release from quarantine:
+        <ul class="mb-0 mt-2">
+            {% for pet in overdue_pets %}
+            <li>
+                <a href="{% url 'pet_detail' pet.pet_id %}">{{ pet.name }}</a>
+                - End date: {{ pet.quarantine_end_date }}
+                <a href="{% url 'release_quarantine' pet.pet_id %}" class="btn btn-sm btn-danger ms-2">Release Now</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Soon Release -->
+    {% if soon_release %}
+    <div class="alert alert-info">
+        <i class="fas fa-calendar-week"></i>
+        <strong>Upcoming Releases:</strong> The following pets will be ready for release soon:
+        <ul class="mb-0 mt-2">
+            {% for pet in soon_release %}
+            <li>{{ pet.name }} - Ready on {{ pet.quarantine_end_date }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Quarantine by Reason -->
+    <div class="card">
+        <div class="card-header bg-dark text-white">
+            <h5><i class="fas fa-chart-pie"></i> Quarantine by Reason</h5>
+        </div>
+        <div class="card-body">
+            {% if reason_counts %}
+                {% for reason, count in reason_counts.items %}
+                <div class="mb-2">
+                    <div class="d-flex justify-content-between">
+                        <span>{{ reason }}</span>
+                        <span class="badge bg-primary">{{ count }} pets</span>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar" style="width: {% widthratio count total_quarantined 100 %}%"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted text-center">No quarantine data available.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

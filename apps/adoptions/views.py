@@ -243,14 +243,27 @@ def adoption_add(request):
     if request.method == 'POST':
         pet_id = request.POST.get('pet_id')
         adopter_id = request.POST.get('adopter_id')
+        application_id = request.POST.get('application_id')
         adoption_date = request.POST.get('adoption_date')
         adoption_fee = request.POST.get('adoption_fee')
 
         pet = get_object_or_404(Pet, pet_id=pet_id)
         adopter = get_object_or_404(Adopter, adopter_id=adopter_id)
+        application = get_object_or_404(AdoptionApplication, application_id=application_id)
+
+        # Check if application is approved
+        if application.status != 'Approved':
+            messages.error(request, 'Only approved applications can be converted to adoptions.')
+            return redirect('adoption_add')
+
+        # Check if application already has an adoption
+        if hasattr(application, 'adoption'):
+            messages.error(request, 'This application already has an adoption record.')
+            return redirect('adoption_add')
 
         # Create adoption record
         adoption = Adoption.objects.create(
+            application=application,
             pet=pet,
             adopter=adopter,
             adoption_date=adoption_date,
@@ -268,10 +281,16 @@ def adoption_add(request):
 
     pets = Pet.objects.filter(status='Available')
     adopters = Adopter.objects.all()
+    # Get approved applications that don't have an adoption yet
+    applications = AdoptionApplication.objects.filter(
+        status='Approved',
+        adoption__isnull=True
+    )
 
     context = {
         'pets': pets,
         'adopters': adopters,
+        'applications': applications,
     }
     return render(request, 'adoptions/adoption_form.html', context)
 

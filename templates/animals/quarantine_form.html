@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-white">
+                    <h3><i class="fas fa-procedures"></i> Place {{ pet.name }} Under Quarantine</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <strong>Pet Information:</strong><br>
+                        Name: {{ pet.name }}<br>
+                        Species: {{ pet.species }}<br>
+                        Current Status: <span class="badge bg-secondary">{{ pet.status }}</span>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="id_reason" class="form-label">Reason for Quarantine *</label>
+                            <textarea name="quarantine_reason" id="id_reason" class="form-control" rows="3" required></textarea>
+                            <div class="form-text">Examples: "Exposed to parvovirus", "Bite quarantine", "Respiratory symptoms"</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_location" class="form-label">Quarantine Location</label>
+                            <input type="text" name="quarantine_location" id="id_location" class="form-control" placeholder="e.g., Isolation Ward 1, Kennel B-12">
+                            <div class="form-text">Where will this pet be kept during quarantine?</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_end_date" class="form-label">Expected End Date</label>
+                            <input type="date" name="quarantine_end_date" id="id_end_date" class="form-control">
+                            <div class="form-text">Leave blank for standard 14-day quarantine period.</div>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Important:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>Quarantine pets must be kept separate from other animals</li>
+                                <li>Staff should use PPE when handling quarantined pets</li>
+                                <li>Monitor for symptoms daily</li>
+                                <li>Document any changes in medical notes</li>
+                            </ul>
+                        </div>
+
+                        <div class="text-end">
+                            <a href="{% url 'pet_detail' pet.pet_id %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-procedures"></i> Start Quarantine
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

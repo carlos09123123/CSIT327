@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="fas fa-procedures"></i> Quarantine Management</h1>
+        <div>
+            <span class="badge bg-warning fs-5 p-2">Total: {{ total_quarantined }}</span>
+        </div>
+    </div>
+
+    <div class="alert alert-warning">
+        <i class="fas fa-info-circle"></i>
+        These animals are currently under quarantine. They must be kept separate from other animals and monitored daily.
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-dark text-white">
+            <h5><i class="fas fa-list"></i> Quarantined Pets</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Species</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Days Left</th>
+                            <th>Reason</th>
+                            <th>Location</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pet in quarantined_pets %}
+                        <tr>
+                            <td>{{ pet.pet_id }}</td
+                            <td><strong>{{ pet.name }}</strong></td
+                            <td>{{ pet.species }}</td
+                            <td>{{ pet.quarantine_start_date }}</td
+                            <td>{{ pet.quarantine_end_date }}</td
+                            <td>
+                                {% if pet.days_left > 0 %}
+                                    <span class="badge bg-warning">{{ pet.days_left }} days</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Overdue</span>
+                                {% endif %}
+                            </td
+                            <td>{{ pet.quarantine_reason|truncatechars:40 }}</td
+                            <td>{{ pet.quarantine_location|default:"-" }}</td
+                            <td>
+                                <a href="{% url 'pet_detail' pet.pet_id %}" class="btn btn-sm btn-info">View</a>
+                                {% if pet.days_left == 0 %}
+                                <a href="{% url 'release_quarantine' pet.pet_id %}" class="btn btn-sm btn-success">Release</a>
+                                {% endif %}
+                            </td
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="9" class="text-center text-muted">
+                                No animals are currently in quarantine.
+                            </td
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header bg-info text-white">
+            <h5><i class="fas fa-info-circle"></i> Quarantine Guidelines</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <h6>Standard Quarantine Periods:</h6>
+                    <ul>
+                        <li>Bite quarantine: 10-14 days</li>
+                        <li>Respiratory illness: 14 days</li>
+                        <li>Parvovirus exposure: 14-21 days</li>
+                        <li>Ringworm: 21-28 days</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6>Required Monitoring:</h6>
+                    <ul>
+                        <li>Daily temperature checks</li>
+                        <li>Monitor for symptoms</li>
+                        <li>Document in medical notes</li>
+                        <li>Use separate equipment</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6>Release Criteria:</h6>
+                    <ul>
+                        <li>No symptoms for 48 hours</li>
+                        <li>Completed quarantine period</li>
+                        <li>Cleared by veterinarian</li>
+                        <li>Final health check</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

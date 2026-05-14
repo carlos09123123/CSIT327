@@ -111,7 +111,25 @@
             color: white;
         }
 
-        .footer {
+        .table {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .table thead th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px;
+        }
+
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
+
+        footer {
             background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
             color: white;
             padding: 20px;
@@ -137,14 +155,6 @@
         .dashboard-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-
-        footer {
-            background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
-            color: white;
-            padding: 20px;
-            text-align: center;
-            margin-top: 50px;
         }
 
         footer a {
@@ -210,6 +220,20 @@
                                     <i class="fas fa-users"></i> Staff
                                 </a>
                             </li>
+                            <!-- Quarantine Dropdown for Admin -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="quarantineDropdown" role="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-procedures"></i> Quarantine
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{% url 'quarantine_list' %}">
+                                        <i class="fas fa-list"></i> View Quarantined Pets
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="{% url 'quarantine_dashboard' %}">
+                                        <i class="fas fa-chart-line"></i> Quarantine Dashboard
+                                    </a></li>
+                                </ul>
+                            </li>
 
                         <!-- ==================== MANAGER/STAFF MENU ==================== -->
                         {% elif user.role == 'Manager' or user.role == 'Staff' %}
@@ -237,6 +261,20 @@
                                 <a class="nav-link" href="{% url 'adoption_list' %}">
                                     <i class="fas fa-file-signature"></i> Adoptions
                                 </a>
+                            </li>
+                            <!-- Quarantine Dropdown for Staff -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="quarantineDropdown" role="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-procedures"></i> Quarantine
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{% url 'quarantine_list' %}">
+                                        <i class="fas fa-list"></i> View Quarantined Pets
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="{% url 'quarantine_dashboard' %}">
+                                        <i class="fas fa-chart-line"></i> Quarantine Dashboard
+                                    </a></li>
+                                </ul>
                             </li>
 
                         <!-- ==================== VETERINARIAN MENU ==================== -->
@@ -271,9 +309,35 @@
                         <!-- ==================== USER DROPDOWN (Profile, Logout) ==================== -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user-circle"></i> {{ user.username }}
+                                <i class="fas fa-user-circle"></i>
+                                {% if request.session.user_name %}
+                                    {{ request.session.user_name }}
+                                {% elif user.is_authenticated %}
+                                    {{ user.first_name }} {{ user.last_name }}
+                                {% else %}
+                                    Account
+                                {% endif %}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
+                                <li class="dropdown-header text-primary">
+                                    <i class="fas fa-user-check"></i> Logged in as:
+                                </li>
+                                <li class="dropdown-header text-dark fw-bold">
+                                    {% if request.session.user_name %}
+                                        {{ request.session.user_name }}
+                                    {% elif user.is_authenticated %}
+                                        {{ user.first_name }} {{ user.last_name }}
+                                    {% endif %}
+                                </li>
+                                <li class="dropdown-header text-muted small">
+                                    <i class="fas fa-envelope"></i>
+                                    {% if request.session.user_email %}
+                                        {{ request.session.user_email }}
+                                    {% elif user.is_authenticated %}
+                                        {{ user.email }}
+                                    {% endif %}
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="{% url 'profile' %}">
                                     <i class="fas fa-id-card"></i> My Profile
                                 </a></li>
@@ -285,7 +349,7 @@
                                     <small><i class="fas fa-clock"></i> Logged in: {{ session_login_time|default:"Just now" }}</small>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{% url 'logout' %}">
+                                <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">
                                     <i class="fas fa-sign-out-alt"></i> Logout
                                 </a></li>
                             </ul>
