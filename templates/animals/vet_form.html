@@ -1,50 +1,55 @@
 {% extends 'base.html' %}
 
+{% block title %}Add Veterinarian{% endblock %}
+
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
             <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h3><i class="fas fa-user-md"></i> Add New Veterinarian</h3>
+                <div class="card-header">
+                    <h3>Add New Veterinarian</h3>
                 </div>
                 <div class="card-body">
-                    <form method="post">
+                    <form method="POST">
                         {% csrf_token %}
+
                         <div class="mb-3">
-                            <label class="form-label">Full Name *</label>
-                            <input type="text" name="full_name" class="form-control" required>
-                            <small class="text-muted">e.g., Dr. John Smith</small>
+                            <label for="full_name" class="form-label">Full Name *</label>
+                            <input type="text" class="form-control" id="full_name" name="full_name" required>
                         </div>
+
                         <div class="mb-3">
-                            <label class="form-label">Clinic Name *</label>
-                            <input type="text" name="clinic_name" class="form-control" required>
+                            <label for="email" class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
                         </div>
+
                         <div class="mb-3">
-                            <label class="form-label">Phone Number *</label>
-                            <input type="text" name="phone" class="form-control" required>
-                            <small class="text-muted">Format: +63 XXX XXX XXXX</small>
+                            <label for="phone" class="form-label">Phone Number *</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" required>
                         </div>
+
                         <div class="mb-3">
-                            <label class="form-label">Email Address *</label>
-                            <input type="email" name="email" class="form-control" required>
+                            <label for="clinic_name" class="form-label">Clinic Name *</label>
+                            <input type="text" class="form-control" id="clinic_name" name="clinic_name" required>
                         </div>
+
                         <div class="mb-3">
-                            <label class="form-label">License Number *</label>
-                            <input type="text" name="license_no" class="form-control" required>
-                            <small class="text-muted">Must be unique</small>
+                            <label for="license_no" class="form-label">License Number *</label>
+                            <input type="text" class="form-control" id="license_no" name="license_no" required>
                         </div>
+
+                        <div class="mb-3">
+                            <label for="voucher" class="form-label">Voucher (Optional)</label>
+                            <input type="text" class="form-control" id="voucher" name="voucher">
+                        </div>
+
                         <div class="alert alert-info">
-                            <i class="fas fa-info-circle"></i>
-                            <strong>Business Rules:</strong>
-                            <ul class="mb-0 mt-2">
-                                <li>License number must be unique</li>
-                                <li>Email must be unique across all veterinarians</li>
-                                <li>Veterinarian must be accredited before performing medical procedures</li>
-                            </ul>
+                            <small>Note: A user account will be created automatically with username based on email and default password 'password123'. The veterinarian should change their password on first login.</small>
                         </div>
-                        <div class="text-end">
-                            <a href="{% url 'vet_list' %}" class="btn btn-secondary">Cancel</a>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'vet_list' %}" class="btn btn-secondary me-md-2">Cancel</a>
                             <button type="submit" class="btn btn-primary">Add Veterinarian</button>
                         </div>
                     </form>

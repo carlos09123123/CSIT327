@@ -5,9 +5,16 @@ from django.utils import timezone
 from datetime import date, timedelta
 from PIL import Image
 import os
+from django.conf import settings
 
 
 class Veterinary(models.Model):
+    STATUS_CHOICES = [
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+        ('suspended', 'Suspended'),
+    ]
+
     vet_id = models.AutoField(primary_key=True)
     full_name = models.CharField(max_length=200)
     clinic_name = models.CharField(max_length=200)
@@ -15,6 +22,15 @@ class Veterinary(models.Model):
     email = models.EmailField(unique=True)
     license_no = models.CharField(max_length=50, unique=True)
     is_accredited = models.BooleanField(default=True)
+
+    # NEW FIELDS for compatibility with views.py
+    voucher = models.CharField(max_length=100, blank=True, null=True)
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='active')
+    action = models.CharField(max_length=50, default='active')
+
+    # Timestamp fields
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     class Meta:
         db_table = 'veterinary'
