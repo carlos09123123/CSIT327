@@ -100,9 +100,9 @@
                             <tbody>
                                 {% for vacc in upcoming_vaccinations %}
                                 <tr>
-                                    <td>{{ vacc.pet_name }}</td
-                                    <td>{{ vacc.vaccine_name }}</td
-                                    <td>{{ vacc.due_date }}</td
+                                    <td>{{ vacc.pet_name }}</td>
+                                    <td>{{ vacc.vaccine_name }}</td>
+                                    <td>{{ vacc.due_date }}</td>
                                     <td><span class="badge bg-warning">{{ vacc.days_left }} days</span></td>
                                  </tr>
                                 {% endfor %}
@@ -137,9 +137,9 @@
                             <tbody>
                                 {% for vacc in overdue_vaccinations %}
                                 <tr>
-                                    <td>{{ vacc.pet_name }}</td
-                                    <td>{{ vacc.vaccine_name }}</td
-                                    <td>{{ vacc.due_date }}</td
+                                    <td>{{ vacc.pet_name }}</td>
+                                    <td>{{ vacc.vaccine_name }}</td>
+                                    <td>{{ vacc.due_date }}</td>
                                     <td><span class="badge bg-danger">{{ vacc.days_overdue }} days</span></td>
                                  </tr>
                                 {% endfor %}
@@ -177,11 +177,11 @@
                     <tbody>
                         {% for record in recent_medical_records %}
                         <tr>
-                            <td>{{ record.pet_name }}</td
-                            <td>{{ record.visit_date }}</td
-                            <td>{{ record.diagnosis|truncatechars:40 }}</td
-                            <td>{{ record.treatment|truncatechars:40 }}</td
-                            <td>{{ record.vet_name }}</td
+                            <td>{{ record.pet_name }}</td>
+                            <td>{{ record.visit_date }}</td>
+                            <td>{{ record.diagnosis|truncatechars:40 }}</td>
+                            <td>{{ record.treatment|truncatechars:40 }}</td>
+                            <td>{{ record.vet_name }}</td>
                          </tr>
                         {% endfor %}
                     </tbody>

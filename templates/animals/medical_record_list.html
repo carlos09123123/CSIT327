@@ -145,21 +145,21 @@
                     <tbody>
                         {% for record in records %}
                         <tr>
-                            <td>{{ record.medical_id }}</td
+                            <td>{{ record.medical_id }}</td>
                             <td>
                                 <a href="{% url 'pet_detail' record.pet.pet_id %}" class="text-decoration-none">
                                     <strong>{{ record.pet.name }}</strong>
                                 </a>
                                 <br>
                                 <small class="text-muted">{{ record.pet.species }}</small>
-                            </td
-                            <td>{{ record.visit_date }}</td
+                            </td>
+                            <td>{{ record.visit_date }}</td>
                             <td>
                                 <span class="badge bg-info">{{ record.diagnosis|truncatechars:40 }}</span>
-                            </td
-                            <td>{{ record.treatment|truncatechars:50 }}</td
-                            <td>{{ record.weight|default:"-" }} kg</td
-                            <td>{{ record.vet.full_name|default:"Unknown" }}</td
+                            </td>
+                            <td>{{ record.treatment|truncatechars:50 }}</td>
+                            <td>{{ record.weight|default:"-" }} kg</td>
+                            <td>{{ record.vet.full_name|default:"Unknown" }}</td>
                             <td>
                                 <a href="{% url 'pet_detail' record.pet.pet_id %}" class="btn btn-sm btn-info">
                                     <i class="fas fa-eye"></i> View Pet
@@ -169,7 +169,7 @@
                                     <i class="fas fa-trash"></i> Delete
                                 </a>
                                 {% endif %}
-                            </td
+                            </td>
                         </tr>
                         {% empty %}
                         <tr>
@@ -177,7 +177,7 @@
                                 <div class="alert alert-info">
                                     <i class="fas fa-info-circle"></i> No medical records found.
                                 </div>
-                            </td
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>

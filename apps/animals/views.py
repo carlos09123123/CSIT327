@@ -70,7 +70,9 @@ def pet_detail(request, pk):
 
 @login_required
 def pet_add(request):
+    """Add a new pet - Only Admin/Manager/Staff (NOT Veterinarian)"""
     check_pet_management_permission(request)
+
     if request.method == 'POST':
         pet = Pet.objects.create(
             name=request.POST.get('name'),
@@ -85,9 +87,34 @@ def pet_add(request):
             spay_neuter_status=request.POST.get('spay_neuter_status') == 'on',
             medical_notes=request.POST.get('medical_notes', ''),
             status=request.POST.get('status'),
+
+            # ========== SESSION TRACKING ==========
+            created_by=request.session.get('user_name', request.user.username),
+            created_by_role=request.user.role,
+            created_by_session_id=request.session.session_key,
+            # ======================================
         )
+
+        # Handle photo upload
+        if request.FILES.get('photo'):
+            pet.photo = request.FILES['photo']
+        pet.save()
+
+        # ========== LOG TO TERMINAL ==========
+        from datetime import datetime
+        print(f"\n{'=' * 50}")
+        print(f"🐾 NEW PET ADDED")
+        print(f"   Pet Name: {pet.name}")
+        print(f"   Added By: {pet.created_by}")
+        print(f"   Role: {pet.created_by_role}")
+        print(f"   Session ID: {pet.created_by_session_id}")
+        print(f"   Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        print(f"{'=' * 50}\n")
+        # ====================================
+
         messages.success(request, f'Pet "{pet.name}" added successfully!')
         return redirect('pet_detail', pk=pet.pet_id)
+
     context = {
         'species_choices': Pet.SPECIES_CHOICES,
         'sex_choices': Pet.SEX_CHOICES,
@@ -99,8 +126,10 @@ def pet_add(request):
 
 @login_required
 def pet_edit(request, pk):
+    """Edit a pet - Only Admin/Manager/Staff (NOT Veterinarian)"""
     check_pet_management_permission(request)
     pet = get_object_or_404(Pet, pet_id=pk)
+
     if request.method == 'POST':
         pet.name = request.POST.get('name')
         pet.species = request.POST.get('species')
@@ -114,9 +143,14 @@ def pet_edit(request, pk):
         pet.spay_neuter_status = request.POST.get('spay_neuter_status') == 'on'
         pet.medical_notes = request.POST.get('medical_notes', '')
         pet.status = request.POST.get('status')
+
+        if request.FILES.get('photo'):
+            pet.photo = request.FILES['photo']
         pet.save()
+
         messages.success(request, f'Pet "{pet.name}" updated successfully!')
         return redirect('pet_detail', pk=pet.pet_id)
+
     context = {
         'pet': pet,
         'species_choices': Pet.SPECIES_CHOICES,
@@ -129,6 +163,7 @@ def pet_edit(request, pk):
 
 @login_required
 def pet_delete(request, pk):
+    """Delete a pet - Only Admin/Manager/Staff (NOT Veterinarian)"""
     check_pet_management_permission(request)
     pet = get_object_or_404(Pet, pet_id=pk)
     if request.method == 'POST':
@@ -139,48 +174,14 @@ def pet_delete(request, pk):
     return render(request, 'animals/pet_confirm_delete.html', {'pet': pet})
 
 
-@login_required
-def quarantine_pet(request, pk):
-    if request.user.role not in ['Admin', 'Manager', 'Staff', 'Vet']:
-        messages.error(request, 'You do not have permission to quarantine pets.')
-        return redirect('pet_detail', pk=pk)
-    pet = get_object_or_404(Pet, pet_id=pk)
-    if request.method == 'POST':
-        quarantine_reason = request.POST.get('quarantine_reason')
-        quarantine_location = request.POST.get('quarantine_location')
-        quarantine_end_date = request.POST.get('quarantine_end_date')
-        if not quarantine_end_date:
-            quarantine_end_date = date.today() + timedelta(days=14)
-        pet.status = 'Quarantine'
-        pet.quarantine_start_date = date.today()
-        pet.quarantine_end_date = quarantine_end_date
-        pet.quarantine_reason = quarantine_reason
-        pet.quarantine_location = quarantine_location
-        pet.save()
-        messages.success(request, f'{pet.name} has been placed under quarantine until {quarantine_end_date}.')
-        return redirect('pet_detail', pk=pet.pet_id)
-    return render(request, 'animals/quarantine_form.html', {'pet': pet})
-
-
-@login_required
-def release_from_quarantine(request, pk):
-    if request.user.role not in ['Admin', 'Manager', 'Staff', 'Vet']:
-        messages.error(request, 'You do not have permission to release pets from quarantine.')
-        return redirect('pet_detail', pk=pk)
-    pet = get_object_or_404(Pet, pet_id=pk)
-    if request.method == 'POST':
-        pet.status = 'Available'
-        pet.save()
-        messages.success(request, f'{pet.name} has been released from quarantine and is now available for adoption.')
-        return redirect('pet_detail', pk=pet.pet_id)
-    return render(request, 'animals/release_quarantine.html', {'pet': pet})
-
+# ==================== QUARANTINE VIEWS ====================
 
 @login_required
 def quarantine_list(request):
     if request.user.role not in ['Admin', 'Manager', 'Staff', 'Vet']:
         messages.error(request, 'You do not have permission to view quarantine list.')
         return redirect('index')
+
     quarantined_pets = Pet.objects.filter(status='Quarantine').order_by('quarantine_end_date')
     for pet in quarantined_pets:
         if pet.quarantine_end_date:
@@ -188,6 +189,7 @@ def quarantine_list(request):
             pet.days_left = max(0, days_left)
         else:
             pet.days_left = 0
+
     context = {
         'quarantined_pets': quarantined_pets,
         'total_quarantined': quarantined_pets.count(),
@@ -200,6 +202,7 @@ def quarantine_dashboard(request):
     if request.user.role not in ['Admin', 'Manager', 'Staff', 'Vet']:
         messages.error(request, 'You do not have permission to view quarantine dashboard.')
         return redirect('index')
+
     quarantined_pets = Pet.objects.filter(status='Quarantine')
     total_quarantined = quarantined_pets.count()
     overdue_pets = quarantined_pets.filter(quarantine_end_date__lt=date.today())
@@ -207,11 +210,13 @@ def quarantine_dashboard(request):
         quarantine_end_date__gte=date.today(),
         quarantine_end_date__lte=date.today() + timedelta(days=3)
     )
+
     reason_counts = {}
     for pet in quarantined_pets:
         if pet.quarantine_reason:
             reason = pet.quarantine_reason[:30]
             reason_counts[reason] = reason_counts.get(reason, 0) + 1
+
     context = {
         'total_quarantined': total_quarantined,
         'overdue_pets': overdue_pets,
@@ -220,6 +225,54 @@ def quarantine_dashboard(request):
     }
     return render(request, 'animals/quarantine_dashboard.html', context)
 
+
+@login_required
+def quarantine_pet(request, pk):
+    if request.user.role not in ['Admin', 'Manager', 'Staff', 'Vet']:
+        messages.error(request, 'You do not have permission to quarantine pets.')
+        return redirect('pet_detail', pk=pk)
+
+    pet = get_object_or_404(Pet, pet_id=pk)
+
+    if request.method == 'POST':
+        quarantine_reason = request.POST.get('quarantine_reason')
+        quarantine_location = request.POST.get('quarantine_location')
+        quarantine_end_date = request.POST.get('quarantine_end_date')
+
+        if not quarantine_end_date:
+            quarantine_end_date = date.today() + timedelta(days=14)
+
+        pet.status = 'Quarantine'
+        pet.quarantine_start_date = date.today()
+        pet.quarantine_end_date = quarantine_end_date
+        pet.quarantine_reason = quarantine_reason
+        pet.quarantine_location = quarantine_location
+        pet.save()
+
+        messages.success(request, f'{pet.name} has been placed under quarantine until {quarantine_end_date}.')
+        return redirect('pet_detail', pk=pet.pet_id)
+
+    return render(request, 'animals/quarantine_form.html', {'pet': pet})
+
+
+@login_required
+def release_from_quarantine(request, pk):
+    if request.user.role not in ['Admin', 'Manager', 'Staff', 'Vet']:
+        messages.error(request, 'You do not have permission to release pets from quarantine.')
+        return redirect('pet_detail', pk=pk)
+
+    pet = get_object_or_404(Pet, pet_id=pk)
+
+    if request.method == 'POST':
+        pet.status = 'Available'
+        pet.save()
+        messages.success(request, f'{pet.name} has been released from quarantine and is now available for adoption.')
+        return redirect('pet_detail', pk=pet.pet_id)
+
+    return render(request, 'animals/release_quarantine.html', {'pet': pet})
+
+
+# ==================== MEDICAL RECORD VIEWS ====================
 
 @login_required
 def medical_add(request, pet_id):
@@ -303,6 +356,8 @@ def medical_record_list(request):
     return render(request, 'animals/medical_record_list.html', context)
 
 
+# ==================== VACCINATION VIEWS ====================
+
 @login_required
 def vaccination_add(request, pet_id):
     check_vet_medical_permission(request)
@@ -381,90 +436,7 @@ def mark_vaccination_completed(request, pk):
     return render(request, 'animals/mark_vaccination_completed.html', {'vaccination': vaccination})
 
 
-@login_required
-def pet_medical_summary(request, pk):
-    permission = get_user_permission(request)
-    if not permission:
-        raise PermissionDenied("You don't have permission to view medical summary.")
-    pet = get_object_or_404(Pet, pet_id=pk)
-    medical_records = pet.medical_records.all().order_by('-visit_date')
-    vaccinations = pet.vaccinations.all().order_by('-vaccination_date')
-    total_visits = medical_records.count()
-    most_common_diagnosis = medical_records.values('diagnosis').annotate(
-        count=Count('diagnosis')
-    ).order_by('-count').first()
-    last_vaccination = vaccinations.filter(is_completed=True).first()
-    next_vaccination = vaccinations.filter(is_completed=False, next_due_date__gte=date.today()).order_by('next_due_date').first()
-    context = {
-        'pet': pet,
-        'medical_records': medical_records,
-        'vaccinations': vaccinations,
-        'total_visits': total_visits,
-        'most_common_diagnosis': most_common_diagnosis,
-        'last_vaccination': last_vaccination,
-        'next_vaccination': next_vaccination,
-        'can_be_adopted': pet.can_be_adopted(),
-        'eligibility_message': pet.get_adoption_eligibility_message(),
-        'is_vet': permission == 'vet_access',
-    }
-    return render(request, 'animals/pet_medical_summary.html', context)
-
-
-@login_required
-def export_medical_records(request, pk):
-    permission = get_user_permission(request)
-    if not permission:
-        raise PermissionDenied("You don't have permission to export medical records.")
-    pet = get_object_or_404(Pet, pet_id=pk)
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = f'attachment; filename="{pet.name}_medical_records.csv"'
-    writer = csv.writer(response)
-    writer.writerow(['Date', 'Diagnosis', 'Treatment', 'Weight (kg)', 'Veterinarian', 'Notes'])
-    for record in pet.medical_records.all().order_by('-visit_date'):
-        writer.writerow([
-            record.visit_date,
-            record.diagnosis,
-            record.treatment,
-            record.weight or '',
-            record.vet.full_name if record.vet else '',
-            record.notes or ''
-        ])
-    return response
-
-
-@login_required
-def bulk_import_pets(request):
-    if request.user.role not in ['Admin', 'Manager']:
-        messages.error(request, 'Only administrators can bulk import pets.')
-        return redirect('pet_list')
-    if request.method == 'POST' and request.FILES.get('csv_file'):
-        csv_file = request.FILES['csv_file']
-        try:
-            decoded_file = csv_file.read().decode('utf-8').splitlines()
-            reader = csv.DictReader(decoded_file)
-            success_count = 0
-            error_count = 0
-            for row in reader:
-                try:
-                    Pet.objects.create(
-                        name=row.get('name'),
-                        species=row.get('species'),
-                        breed=row.get('breed', ''),
-                        age=int(row.get('age', 0)) if row.get('age') else None,
-                        sex=row.get('sex'),
-                        size=row.get('size'),
-                        color=row.get('color'),
-                        status=row.get('status', 'Available'),
-                    )
-                    success_count += 1
-                except Exception as e:
-                    error_count += 1
-            messages.success(request, f'Successfully imported {success_count} pets. {error_count} errors.')
-            return redirect('pet_list')
-        except Exception as e:
-            messages.error(request, f'Error reading CSV file: {e}')
-    return render(request, 'animals/bulk_import.html')
-
+# ==================== VETERINARY MANAGEMENT ====================
 
 @login_required
 def vet_list(request):
@@ -504,6 +476,8 @@ def vet_delete(request, pk):
     messages.success(request, 'Veterinarian deleted!')
     return redirect('vet_list')
 
+
+# ==================== MEDICAL STATISTICS ====================
 
 @login_required
 def medical_statistics(request):
@@ -593,3 +567,91 @@ def medical_statistics(request):
         'pets_by_species': pets_by_species,
     }
     return render(request, 'animals/medical_statistics.html', context)
+
+
+# ==================== ADDITIONAL FEATURES ====================
+
+@login_required
+def pet_medical_summary(request, pk):
+    permission = get_user_permission(request)
+    if not permission:
+        raise PermissionDenied("You don't have permission to view medical summary.")
+    pet = get_object_or_404(Pet, pet_id=pk)
+    medical_records = pet.medical_records.all().order_by('-visit_date')
+    vaccinations = pet.vaccinations.all().order_by('-vaccination_date')
+    total_visits = medical_records.count()
+    most_common_diagnosis = medical_records.values('diagnosis').annotate(
+        count=Count('diagnosis')
+    ).order_by('-count').first()
+    last_vaccination = vaccinations.filter(is_completed=True).first()
+    next_vaccination = vaccinations.filter(is_completed=False, next_due_date__gte=date.today()).order_by(
+        'next_due_date').first()
+    context = {
+        'pet': pet,
+        'medical_records': medical_records,
+        'vaccinations': vaccinations,
+        'total_visits': total_visits,
+        'most_common_diagnosis': most_common_diagnosis,
+        'last_vaccination': last_vaccination,
+        'next_vaccination': next_vaccination,
+        'can_be_adopted': pet.can_be_adopted(),
+        'eligibility_message': pet.get_adoption_eligibility_message(),
+        'is_vet': permission == 'vet_access',
+    }
+    return render(request, 'animals/pet_medical_summary.html', context)
+
+
+@login_required
+def export_medical_records(request, pk):
+    permission = get_user_permission(request)
+    if not permission:
+        raise PermissionDenied("You don't have permission to export medical records.")
+    pet = get_object_or_404(Pet, pet_id=pk)
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="{pet.name}_medical_records.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['Date', 'Diagnosis', 'Treatment', 'Weight (kg)', 'Veterinarian', 'Notes'])
+    for record in pet.medical_records.all().order_by('-visit_date'):
+        writer.writerow([
+            record.visit_date,
+            record.diagnosis,
+            record.treatment,
+            record.weight or '',
+            record.vet.full_name if record.vet else '',
+            record.notes or ''
+        ])
+    return response
+
+
+@login_required
+def bulk_import_pets(request):
+    if request.user.role not in ['Admin', 'Manager']:
+        messages.error(request, 'Only administrators can bulk import pets.')
+        return redirect('pet_list')
+    if request.method == 'POST' and request.FILES.get('csv_file'):
+        csv_file = request.FILES['csv_file']
+        try:
+            decoded_file = csv_file.read().decode('utf-8').splitlines()
+            reader = csv.DictReader(decoded_file)
+            success_count = 0
+            error_count = 0
+            for row in reader:
+                try:
+                    Pet.objects.create(
+                        name=row.get('name'),
+                        species=row.get('species'),
+                        breed=row.get('breed', ''),
+                        age=int(row.get('age', 0)) if row.get('age') else None,
+                        sex=row.get('sex'),
+                        size=row.get('size'),
+                        color=row.get('color'),
+                        status=row.get('status', 'Available'),
+                    )
+                    success_count += 1
+                except Exception as e:
+                    error_count += 1
+            messages.success(request, f'Successfully imported {success_count} pets. {error_count} errors.')
+            return redirect('pet_list')
+        except Exception as e:
+            messages.error(request, f'Error reading CSV file: {e}')
+    return render(request, 'animals/bulk_import.html')

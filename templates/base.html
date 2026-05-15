@@ -27,7 +27,7 @@
         }
 
         .navbar-brand {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: bold;
             color: #fff !important;
         }
@@ -39,20 +39,39 @@
         .nav-link {
             color: rgba(255,255,255,0.9) !important;
             font-weight: 500;
-            margin: 0 5px;
+            margin: 0 2px;
+            padding: 8px 12px;
             transition: all 0.3s;
+            border-radius: 5px;
+        }
+
+        .nav-link i {
+            margin-right: 8px;
+            width: 20px;
+            text-align: center;
         }
 
         .nav-link:hover {
             color: #fff !important;
             background: rgba(255,255,255,0.1);
-            border-radius: 5px;
             transform: translateY(-2px);
         }
 
         .dropdown-menu {
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-top: 5px;
+        }
+
+        .dropdown-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+            color: #667eea;
+        }
+
+        .dropdown-item:hover i {
+            color: #fff;
         }
 
         .dropdown-header {
@@ -168,9 +187,38 @@
             text-decoration: underline;
         }
 
+        .dropdown-toggle::after {
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+
+        .user-name {
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
         @media (max-width: 768px) {
             .navbar-brand {
-                font-size: 1.3rem;
+                font-size: 1.2rem;
+            }
+            .nav-link {
+                padding: 8px 10px;
+            }
+            .user-name {
+                max-width: 100px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .navbar-nav {
+                margin-top: 10px;
+            }
+            .nav-item {
+                margin: 2px 0;
             }
         }
     </style>
@@ -220,12 +268,11 @@
                                     <i class="fas fa-users"></i> Staff
                                 </a>
                             </li>
-                            <!-- Quarantine Dropdown for Admin -->
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="quarantineDropdown" role="button" data-bs-toggle="dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="quarantineDropdownAdmin" role="button" data-bs-toggle="dropdown">
                                     <i class="fas fa-procedures"></i> Quarantine
                                 </a>
-                                <ul class="dropdown-menu">
+                                <ul class="dropdown-menu" aria-labelledby="quarantineDropdownAdmin">
                                     <li><a class="dropdown-item" href="{% url 'quarantine_list' %}">
                                         <i class="fas fa-list"></i> View Quarantined Pets
                                     </a></li>
@@ -262,12 +309,11 @@
                                     <i class="fas fa-file-signature"></i> Adoptions
                                 </a>
                             </li>
-                            <!-- Quarantine Dropdown for Staff -->
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="quarantineDropdown" role="button" data-bs-toggle="dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="quarantineDropdownStaff" role="button" data-bs-toggle="dropdown">
                                     <i class="fas fa-procedures"></i> Quarantine
                                 </a>
-                                <ul class="dropdown-menu">
+                                <ul class="dropdown-menu" aria-labelledby="quarantineDropdownStaff">
                                     <li><a class="dropdown-item" href="{% url 'quarantine_list' %}">
                                         <i class="fas fa-list"></i> View Quarantined Pets
                                     </a></li>
@@ -304,25 +350,41 @@
                                     <i class="fas fa-user-md"></i> Veterinarians
                                 </a>
                             </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="quarantineDropdownVet" role="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-procedures"></i> Quarantine
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="quarantineDropdownVet">
+                                    <li><a class="dropdown-item" href="{% url 'quarantine_list' %}">
+                                        <i class="fas fa-list"></i> View Quarantined Pets
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="{% url 'quarantine_dashboard' %}">
+                                        <i class="fas fa-chart-line"></i> Quarantine Dashboard
+                                    </a></li>
+                                </ul>
+                            </li>
                         {% endif %}
 
                         <!-- ==================== USER DROPDOWN (Profile, Logout) ==================== -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
                                 <i class="fas fa-user-circle"></i>
-                                {% if request.session.user_name %}
-                                    {{ request.session.user_name }}
-                                {% elif user.is_authenticated %}
-                                    {{ user.first_name }} {{ user.last_name }}
-                                {% else %}
-                                    Account
-                                {% endif %}
+                                <span class="user-name">
+                                    {% if request.session.user_name %}
+                                        {{ request.session.user_name }}
+                                    {% elif user.is_authenticated %}
+                                        {{ user.first_name }} {{ user.last_name }}
+                                    {% else %}
+                                        Account
+                                    {% endif %}
+                                </span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li class="dropdown-header text-primary">
                                     <i class="fas fa-user-check"></i> Logged in as:
                                 </li>
                                 <li class="dropdown-header text-dark fw-bold">
+                                    <i class="fas fa-user"></i>
                                     {% if request.session.user_name %}
                                         {{ request.session.user_name }}
                                     {% elif user.is_authenticated %}
@@ -346,7 +408,7 @@
                                 </a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li class="dropdown-header text-muted">
-                                    <small><i class="fas fa-clock"></i> Logged in: {{ session_login_time|default:"Just now" }}</small>
+                                    <i class="fas fa-clock"></i> Logged in: {{ session_login_time|default:"Just now" }}
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">

@@ -37,32 +37,32 @@
                     <tbody>
                         {% for pet in quarantined_pets %}
                         <tr>
-                            <td>{{ pet.pet_id }}</td
-                            <td><strong>{{ pet.name }}</strong></td
-                            <td>{{ pet.species }}</td
-                            <td>{{ pet.quarantine_start_date }}</td
-                            <td>{{ pet.quarantine_end_date }}</td
+                            <td>{{ pet.pet_id }}</td>
+                            <td><strong>{{ pet.name }}</strong></td>
+                            <td>{{ pet.species }}</td>
+                            <td>{{ pet.quarantine_start_date }}</td>
+                            <td>{{ pet.quarantine_end_date }}</td>
                             <td>
                                 {% if pet.days_left > 0 %}
                                     <span class="badge bg-warning">{{ pet.days_left }} days</span>
                                 {% else %}
                                     <span class="badge bg-danger">Overdue</span>
                                 {% endif %}
-                            </td
-                            <td>{{ pet.quarantine_reason|truncatechars:40 }}</td
-                            <td>{{ pet.quarantine_location|default:"-" }}</td
+                            </td>
+                            <td>{{ pet.quarantine_reason|truncatechars:40 }}</td>
+                            <td>{{ pet.quarantine_location|default:"-" }}</td>
                             <td>
                                 <a href="{% url 'pet_detail' pet.pet_id %}" class="btn btn-sm btn-info">View</a>
                                 {% if pet.days_left == 0 %}
                                 <a href="{% url 'release_quarantine' pet.pet_id %}" class="btn btn-sm btn-success">Release</a>
                                 {% endif %}
-                            </td
+                            </td>
                         </tr>
                         {% empty %}
                         <tr>
                             <td colspan="9" class="text-center text-muted">
                                 No animals are currently in quarantine.
-                            </td
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>

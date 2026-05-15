@@ -30,27 +30,27 @@
                     <table class="table table-bordered">
                         <tr>
                             <th width="35%">Species:</th>
-                            <td>{{ pet.species }}</td
+                            <td>{{ pet.species }}</td>
                         </tr>
                         <tr>
                             <th>Breed:</th>
-                            <td>{{ pet.breed|default:"-" }}</td
+                            <td>{{ pet.breed|default:"-" }}</td>
                         </tr>
                         <tr>
                             <th>Age:</th>
-                            <td>{{ pet.age }} months</td
+                            <td>{{ pet.get_age }}</td>
                         </tr>
                         <tr>
                             <th>Sex:</th>
-                            <td>{{ pet.get_sex_display }}</td
+                            <td>{{ pet.get_sex_display }}</td>
                         </tr>
                         <tr>
                             <th>Size:</th>
-                            <td>{{ pet.size }}</td
+                            <td>{{ pet.size }}</td>
                         </tr>
                         <tr>
                             <th>Color:</th>
-                            <td>{{ pet.color }}</td
+                            <td>{{ pet.color }}</td>
                         </tr>
                         <tr>
                             <th>Status:</th>
@@ -68,11 +68,11 @@
                                 {% else %}
                                     <span class="badge bg-secondary">{{ pet.status }}</span>
                                 {% endif %}
-                            </td
+                            </td>
                         </tr>
                         <tr>
                             <th>Intake Date:</th>
-                            <td>{{ pet.intake_date }}</td
+                            <td>{{ pet.intake_date }}</td>
                         </tr>
                     </table>
                 </div>
@@ -109,6 +109,96 @@
         </div>
     </div>
 
+    <!-- Photo Column -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4><i class="fas fa-camera"></i> Pet Photo</h4>
+                </div>
+                <div class="card-body text-center">
+                    {% if pet.photo %}
+                        <img src="{{ pet.photo.url }}" alt="{{ pet.name }}" class="img-fluid rounded" style="max-height: 300px;">
+                        {% if pet.photo_thumbnail %}
+                            <br>
+                            <small class="text-muted">Thumbnail: <img src="{{ pet.photo_thumbnail.url }}" alt="Thumbnail" style="max-height: 50px;"></small>
+                        {% endif %}
+                    {% else %}
+                        <i class="fas fa-dog fa-5x text-muted"></i>
+                        <p class="text-muted mt-2">No photo available</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Record Information Column (Session Tracking) -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h4><i class="fas fa-info-circle"></i> Record Information</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm">
+                        <tr>
+                            <th width="40%">Added By:</th>
+                            <td>
+                                {% if pet.created_by %}
+                                    <i class="fas fa-user"></i> {{ pet.created_by }}
+                                {% else %}
+                                    <span class="text-muted">Unknown</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Role:</th>
+                            <td>
+                                {% if pet.created_by_role %}
+                                    <span class="badge bg-info">{{ pet.created_by_role }}</span>
+                                {% else %}
+                                    <span class="text-muted">Unknown</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Session ID:</th>
+                            <td>
+                                <small class="text-muted">
+                                    {% if pet.created_by_session_id %}
+                                        <i class="fas fa-key"></i> {{ pet.created_by_session_id|truncatechars:25 }}
+                                    {% else %}
+                                        Unknown
+                                    {% endif %}
+                                </small>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Date Added:</th>
+                            <td>
+                                <i class="fas fa-calendar-plus"></i>
+                                {% if pet.created_at %}
+                                    {{ pet.created_at|date:"F j, Y g:i A" }}
+                                {% else %}
+                                    Unknown
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Last Updated:</th>
+                            <td>
+                                <i class="fas fa-edit"></i>
+                                {% if pet.updated_at %}
+                                    {{ pet.updated_at|date:"F j, Y g:i A" }}
+                                {% else %}
+                                    Unknown
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Quarantine Information Card (shown only if pet is in quarantine) -->
     {% if pet.status == 'Quarantine' %}
     <div class="card mb-4 border-warning">
@@ -128,11 +218,11 @@
                 <div class="col-md-3">
                     <strong>Days Left:</strong><br>
                     {% if pet.quarantine_end_date %}
-                        {% with days_left=pet.quarantine_end_date|timeuntil %}
-                            {% if "days" in days_left %}
-                                {{ days_left }}
+                        {% with days_left=pet.quarantine_days_left %}
+                            {% if days_left > 0 %}
+                                <span class="badge bg-warning">{{ days_left }} days</span>
                             {% else %}
-                                <span class="text-danger">Overdue</span>
+                                <span class="badge bg-danger">Overdue</span>
                             {% endif %}
                         {% endwith %}
                     {% else %}
@@ -196,11 +286,11 @@
                     <tbody>
                         {% for record in medical_records %}
                         <tr>
-                            <td>{{ record.visit_date }}</td
-                            <td>{{ record.diagnosis|truncatechars:50 }}</td
-                            <td>{{ record.treatment|truncatechars:50 }}</td
-                            <td>{{ record.weight|default:"-" }} kg</td
-                            <td>{{ record.vet.full_name|default:"Unknown" }}</td
+                            <td>{{ record.visit_date }}</td>
+                            <td>{{ record.diagnosis|truncatechars:50 }}</td>
+                            <td>{{ record.treatment|truncatechars:50 }}</td>
+                            <td>{{ record.weight|default:"-" }} kg</td>
+                            <td>{{ record.vet.full_name|default:"Unknown" }}</td>
                             <td>
                                 {% if not is_vet %}
                                 <a href="{% url 'medical_delete' record.medical_id %}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this medical record?')">
@@ -209,7 +299,7 @@
                                 {% else %}
                                 <span class="text-muted">View only</span>
                                 {% endif %}
-                            </td
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -246,11 +336,11 @@
                     <tbody>
                         {% for vacc in vaccinations %}
                         <tr>
-                            <td>{{ vacc.vaccine_name }}</td
-                            <td>Dose {{ vacc.dose_no }}</td
-                            <td>{{ vacc.vaccination_date }}</td
-                            <td>{{ vacc.next_due_date }}</td
-                            <td>{{ vacc.vet.full_name|default:"Unknown" }}</td
+                            <td>{{ vacc.vaccine_name }}</td>
+                            <td>Dose {{ vacc.dose_no }}</td>
+                            <td>{{ vacc.vaccination_date }}</td>
+                            <td>{{ vacc.next_due_date }}</td>
+                            <td>{{ vacc.vet.full_name|default:"Unknown" }}</td>
                             <td>
                                 {% if not is_vet %}
                                 <a href="{% url 'vaccination_delete' vacc.vaccination_id %}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this vaccination record?')">
@@ -259,7 +349,7 @@
                                 {% else %}
                                 <span class="text-muted">View only</span>
                                 {% endif %}
-                            </td
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>

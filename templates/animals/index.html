@@ -20,12 +20,12 @@
             <tbody>
                 {% for pet in pets %}
                 <tr>
-                    <td>{{ pet.pet_id }}</td
-                    <td>{{ pet.name }}</td
-                    <td>{{ pet.species }}</td
-                    <td>{{ pet.breed|default:"-" }}</td
-                    <td>{{ pet.age }} months</td
-                    <td>{{ pet.status }}</td
+                    <td>{{ pet.pet_id }}</td>
+                    <td>{{ pet.name }}</td>
+                    <td>{{ pet.species }}</td>
+                    <td>{{ pet.breed|default:"-" }}</td>
+                    <td>{{ pet.age }} months</td>
+                    <td>{{ pet.status }}</td>
                 </tr>
                 {% empty %}
                 <tr>

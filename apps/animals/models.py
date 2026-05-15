@@ -56,13 +56,24 @@ class Pet(models.Model):
     intake_date = models.DateField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Available')
 
+    # Photo fields
     photo = models.ImageField(upload_to='pet_photos/', blank=True, null=True)
     photo_thumbnail = models.ImageField(upload_to='pet_photos/thumbnails/', blank=True, null=True)
 
+    # Quarantine Fields
     quarantine_start_date = models.DateField(null=True, blank=True)
     quarantine_end_date = models.DateField(null=True, blank=True)
     quarantine_reason = models.TextField(blank=True, null=True)
     quarantine_location = models.CharField(max_length=255, blank=True, null=True)
+
+    # ========== SESSION TRACKING FIELDS ==========
+    created_by = models.CharField(max_length=100, blank=True, null=True)
+    created_by_role = models.CharField(max_length=50, blank=True, null=True)
+    created_by_session_id = models.CharField(max_length=100, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    # =============================================
 
     class Meta:
         db_table = 'pets'
@@ -82,7 +93,7 @@ class Pet(models.Model):
             img.thumbnail((150, 150))
             thumbnail_name = f"thumb_{os.path.basename(self.photo.name)}"
             thumbnail_path = os.path.join('pet_photos/thumbnails/', thumbnail_name)
-            img.save(os.path.join(thumbnail_path))
+            img.save(os.path.join(settings.MEDIA_ROOT, thumbnail_path))
             self.photo_thumbnail = thumbnail_path
         except Exception as e:
             print(f"Error creating thumbnail: {e}")
