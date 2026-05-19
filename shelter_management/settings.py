@@ -64,7 +64,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'shelter_db',           # The database you created in MySQL Workbench
         'USER': 'root',                  # Your MySQL username (usually 'root')
-        'PASSWORD': '123456', # ⚠️ CHANGE THIS to your MySQL password!
+        'PASSWORD': 'root', # ⚠️ CHANGE THIS to your MySQL password!
         'HOST': '127.0.0.1',             # Localhost
         'PORT': '3306',                  # MySQL default port
         'OPTIONS': {
