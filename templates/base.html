@@ -350,18 +350,10 @@
                                     <i class="fas fa-user-md"></i> Veterinarians
                                 </a>
                             </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="quarantineDropdownVet" role="button" data-bs-toggle="dropdown">
-                                    <i class="fas fa-procedures"></i> Quarantine
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'add_medical_record_quick' %}">
+                                    <i class="fas fa-plus-circle"></i> Add Medical Record
                                 </a>
-                                <ul class="dropdown-menu" aria-labelledby="quarantineDropdownVet">
-                                    <li><a class="dropdown-item" href="{% url 'quarantine_list' %}">
-                                        <i class="fas fa-list"></i> View Quarantined Pets
-                                    </a></li>
-                                    <li><a class="dropdown-item" href="{% url 'quarantine_dashboard' %}">
-                                        <i class="fas fa-chart-line"></i> Quarantine Dashboard
-                                    </a></li>
-                                </ul>
                             </li>
                         {% endif %}
 

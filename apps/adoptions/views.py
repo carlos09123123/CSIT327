@@ -211,10 +211,20 @@ def adopter_change_password(request):
     return render(request, 'adoptions/adopter_change_password.html', {'adopter': adopter})
 
 
-# ==================== TERMS AND WAIVER ====================
+# ==================== TERMS AND POLICY PAGES ====================
 def terms_waiver(request):
     """Display the adoption waiver and terms of service"""
     return render(request, 'adoptions/terms_waiver.html')
+
+
+def privacy_policy(request):
+    """Display the privacy policy page"""
+    return render(request, 'adoptions/privacy_policy.html')
+
+
+def home_visit_agreement(request):
+    """Display the home visit agreement page"""
+    return render(request, 'adoptions/home_visit_agreement.html')
 
 
 # ==================== ADOPTION MANAGEMENT (STAFF ONLY) ====================

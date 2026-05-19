@@ -19,19 +19,19 @@
         
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
         }
-        
+
         .login-container {
             width: 100%;
             max-width: 450px;
         }
-        
+
         .login-card {
             background: white;
             border-radius: 20px;
@@ -39,7 +39,7 @@
             overflow: hidden;
             animation: fadeInUp 0.6s ease-out;
         }
-        
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -50,39 +50,39 @@
                 transform: translateY(0);
             }
         }
-        
+
         .login-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
             padding: 40px 30px;
             text-align: center;
         }
-        
+
         .login-header i {
             font-size: 60px;
             margin-bottom: 15px;
         }
-        
+
         .login-header h2 {
             font-size: 28px;
             font-weight: 600;
             margin-bottom: 10px;
         }
-        
+
         .login-header p {
             font-size: 14px;
             opacity: 0.9;
             margin: 0;
         }
-        
+
         .login-body {
             padding: 40px;
         }
-        
+
         .form-group {
             margin-bottom: 25px;
         }
-        
+
         .form-group label {
             font-weight: 500;
             margin-bottom: 8px;
@@ -90,7 +90,7 @@
             display: block;
             font-size: 14px;
         }
-        
+
         .input-group {
             display: flex;
             align-items: stretch;
@@ -98,19 +98,19 @@
             border-radius: 12px;
             transition: all 0.3s;
         }
-        
+
         .input-group:focus-within {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #1e3c72;
+            box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.1);
         }
-        
+
         .input-group-text {
             background: #f8f9fa;
             border: none;
             border-radius: 12px 0 0 12px;
-            color: #667eea;
+            color: #1e3c72;
         }
-        
+
         .form-control {
             border: none;
             padding: 12px 15px;
@@ -118,15 +118,15 @@
             border-radius: 0 12px 12px 0;
             background: #f8f9fa;
         }
-        
+
         .form-control:focus {
             outline: none;
             background: #f8f9fa;
             box-shadow: none;
         }
-        
+
         .btn-login {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             border: none;
             padding: 14px;
             font-size: 16px;
@@ -137,95 +137,62 @@
             cursor: pointer;
             transition: all 0.3s;
         }
-        
+
         .btn-login:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 5px 20px rgba(30, 60, 114, 0.4);
         }
-        
+
         .btn-register {
             background: transparent;
-            border: 2px solid #667eea;
+            border: 2px solid #1e3c72;
             padding: 12px;
             font-size: 14px;
             font-weight: 600;
             width: 100%;
             border-radius: 12px;
-            color: #667eea;
+            color: #1e3c72;
             cursor: pointer;
             transition: all 0.3s;
             text-decoration: none;
             display: inline-block;
             text-align: center;
         }
-        
+
         .btn-register:hover {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
             text-decoration: none;
             border-color: transparent;
         }
-        
+
         .alert {
             border-radius: 12px;
             padding: 12px 15px;
             margin-bottom: 20px;
             font-size: 14px;
         }
-        
+
         .divider {
             display: flex;
             align-items: center;
             text-align: center;
             margin: 25px 0;
         }
-        
+
         .divider::before,
         .divider::after {
             content: '';
             flex: 1;
             border-bottom: 1px solid #e0e0e0;
         }
-        
+
         .divider span {
             padding: 0 15px;
             color: #999;
             font-size: 12px;
         }
-        
-        .demo-box {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 12px;
-            margin-top: 20px;
-            text-align: center;
-            font-size: 12px;
-        }
-        
-        .demo-box code {
-            background: #e9ecef;
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-family: monospace;
-            font-size: 11px;
-        }
-        
-        .forgot-password {
-            text-align: right;
-            margin-top: -15px;
-            margin-bottom: 20px;
-        }
-        
-        .forgot-password a {
-            font-size: 12px;
-            color: #999;
-            text-decoration: none;
-        }
-        
-        .forgot-password a:hover {
-            color: #667eea;
-        }
-        
+
         @media (max-width: 480px) {
             .login-body {
                 padding: 30px 25px;
@@ -267,7 +234,7 @@
                         <label><i class="fas fa-user me-2"></i> Username / Email</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                            <input type="text" name="username" class="form-control" 
+                            <input type="text" name="username" class="form-control"
                                    placeholder="Enter username (staff) or email (adopter)" required autofocus>
                         </div>
                     </div>
@@ -276,13 +243,9 @@
                         <label><i class="fas fa-lock me-2"></i> Password</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-key"></i></span>
-                            <input type="password" name="password" class="form-control" 
+                            <input type="password" name="password" class="form-control"
                                    placeholder="Enter your password" required>
                         </div>
-                    </div>
-
-                    <div class="forgot-password">
-                        <a href="#"><i class="fas fa-question-circle"></i> Forgot Password?</a>
                     </div>
 
                     <button type="submit" class="btn-login">
@@ -297,12 +260,6 @@
                 <a href="{% url 'adopter_register' %}" class="btn-register">
                     <i class="fas fa-user-plus me-2"></i> Create New Account
                 </a>
-
-                <div class="demo-box">
-                    <i class="fas fa-info-circle me-1"></i> <strong>Demo Credentials:</strong><br>
-                    <code>admin</code> / <code>admin123</code> — Staff Access<br>
-                    <span class="text-muted">(Adopters use registered email & password)</span>
-                </div>
             </div>
         </div>
     </div>

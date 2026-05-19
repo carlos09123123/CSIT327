@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3><i class="fas fa-notes-medical"></i> Quick Add Medical Record</h3>
+                    <p class="mb-0">Document a medical examination or treatment</p>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label">Select Pet *</label>
+                            <select name="pet_id" class="form-select" required>
+                                <option value="">-- Select Pet --</option>
+                                {% for pet in pets %}
+                                <option value="{{ pet.pet_id }}">
+                                    {{ pet.name }} ({{ pet.species }}) - {{ pet.get_age }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Visit Date *</label>
+                            <input type="date" name="visit_date" class="form-control" value="{% now 'Y-m-d' %}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Diagnosis *</label>
+                            <textarea name="diagnosis" class="form-control" rows="2" required placeholder="e.g., Upper respiratory infection, Skin allergy, Ear infection"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Treatment *</label>
+                            <textarea name="treatment" class="form-control" rows="2" required placeholder="e.g., Prescribed antibiotics, Topical cream, Rest and hydration"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Weight (kg)</label>
+                            <input type="number" step="0.01" name="weight" class="form-control" placeholder="Optional - e.g., 5.5">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Veterinarian</label>
+                            <select name="vet_id" class="form-select">
+                                <option value="">-- Select Veterinarian (Optional) --</option>
+                                {% for vet in vets %}
+                                <option value="{{ vet.vet_id }}" {% if current_vet and current_vet.vet_id == vet.vet_id %}selected{% endif %}>
+                                    Dr. {{ vet.full_name }} - {{ vet.clinic_name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            {% if user_role == 'Vet' and not current_vet %}
+                            <small class="text-muted">Your professional record is not yet set up. Please contact admin.</small>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Additional Notes</label>
+                            <textarea name="notes" class="form-control" rows="2" placeholder="Any additional observations or follow-up instructions..."></textarea>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Quick Tip:</strong> This form is optimized for fast documentation of medical records.
+                            You can add more details later by editing the record.
+                        </div>
+
+                        <div class="text-end">
+                            <a href="{% url 'pet_list' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Save Medical Record
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

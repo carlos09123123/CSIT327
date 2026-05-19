@@ -7,8 +7,6 @@ from django.http import HttpResponse
 from datetime import date, timedelta
 import csv
 from .models import Pet, MedicalRecord, Vaccination, Veterinary
-from apps.accounts.models import Staff
-from django.db import transaction
 
 
 def get_user_permission(request):
@@ -160,6 +158,59 @@ def pet_delete(request, pk):
     return render(request, 'animals/pet_confirm_delete.html', {'pet': pet})
 
 
+@login_required
+def add_medical_record_quick(request):
+    """Quick add medical record - Dedicated for Veterinarians"""
+    if request.user.role not in ['Admin', 'Manager', 'Staff', 'Vet']:
+        raise PermissionDenied("You don't have permission to access this page.")
+
+    if request.method == 'POST':
+        pet_id = request.POST.get('pet_id')
+        visit_date = request.POST.get('visit_date')
+        diagnosis = request.POST.get('diagnosis')
+        treatment = request.POST.get('treatment')
+        weight = request.POST.get('weight')
+        vet_id = request.POST.get('vet_id')
+        notes = request.POST.get('notes', '')
+
+        if not pet_id:
+            messages.error(request, 'Please select a pet.')
+            return redirect('add_medical_record_quick')
+
+        pet = get_object_or_404(Pet, pet_id=pet_id)
+
+        medical_record = MedicalRecord.objects.create(
+            pet=pet,
+            vet_id=vet_id if vet_id else None,
+            visit_date=visit_date,
+            diagnosis=diagnosis,
+            treatment=treatment,
+            weight=weight if weight else None,
+            notes=notes,
+        )
+
+        messages.success(request, f'Medical record added for {pet.name} successfully!')
+        return redirect('pet_detail', pk=pet.pet_id)
+
+    pets = Pet.objects.all().order_by('name')
+    vets = Veterinary.objects.all()
+
+    current_vet = None
+    if request.user.role == 'Vet':
+        try:
+            current_vet = Veterinary.objects.get(email=request.user.email)
+        except Veterinary.DoesNotExist:
+            pass
+
+    context = {
+        'pets': pets,
+        'vets': vets,
+        'current_vet': current_vet,
+        'user_role': request.user.role,
+    }
+    return render(request, 'animals/quick_medical_form.html', context)
+
+
 # ==================== QUARANTINE VIEWS ====================
 
 @login_required
@@ -262,7 +313,6 @@ def release_from_quarantine(request, pk):
 
 @login_required
 def medical_add(request, pet_id):
-    """Add medical record - Vets, Staff, Admin can add"""
     check_vet_medical_permission(request)
     pet = get_object_or_404(Pet, pet_id=pet_id)
 
@@ -280,7 +330,6 @@ def medical_add(request, pet_id):
         messages.success(request, 'Medical record added successfully!')
         return redirect('pet_detail', pk=pet.pet_id)
 
-    # Get all veterinarians from the Veterinary model
     vets = Veterinary.objects.all()
     return render(request, 'animals/medical_form.html', {
         'pet': pet,
@@ -354,7 +403,6 @@ def medical_record_list(request):
 
 @login_required
 def vaccination_add(request, pet_id):
-    """Add vaccination - Vets, Staff, Admin can add"""
     check_vet_medical_permission(request)
     pet = get_object_or_404(Pet, pet_id=pet_id)
 
@@ -373,7 +421,6 @@ def vaccination_add(request, pet_id):
         messages.success(request, 'Vaccination record added successfully!')
         return redirect('pet_detail', pk=pet.pet_id)
 
-    # Get all veterinarians from the Veterinary model
     vets = Veterinary.objects.all()
     return render(request, 'animals/vaccination_form.html', {
         'pet': pet,
@@ -438,125 +485,54 @@ def mark_vaccination_completed(request, pk):
     return render(request, 'animals/mark_vaccination_completed.html', {'vaccination': vaccination})
 
 
-# ==================== VETERINARY MANAGEMENT (UPDATED) ====================
+# ==================== VETERINARY MANAGEMENT ====================
 
 @login_required
 def vet_list(request):
-    """Display list of veterinarians from Veterinary table"""
     permission = get_user_permission(request)
     if not permission:
         raise PermissionDenied("You don't have permission to view veterinarians.")
 
-    # Get vets from Veterinary table
     vets = Veterinary.objects.all().order_by('full_name')
 
-    # Debug info (check your terminal after running)
-    print(f"📊 Veterinary table count: {vets.count()}")
-    print(f"📊 Staff table (role='Vet') count: {Staff.objects.filter(role='Vet').count()}")
-
-    return render(request, 'animals/vet_list.html', {'vets': vets})
+    return render(request, 'animals/vet_list.html', {
+        'vets': vets,
+        'user_role': request.user.role
+    })
 
 
 @login_required
 def vet_add(request):
-    """Add a new veterinarian - inserts into BOTH Staff and Veterinary tables"""
     permission = get_user_permission(request)
     if permission not in ['full_access', 'staff_access']:
         raise PermissionDenied("Only staff can add veterinarians.")
 
     if request.method == 'POST':
-        # Get form data
-        full_name = request.POST.get('full_name')
-        email = request.POST.get('email')
-        phone = request.POST.get('phone')
-        clinic_name = request.POST.get('clinic_name')
-        license_no = request.POST.get('license_no')
-        voucher = request.POST.get('voucher', '')
+        is_accredited = request.POST.get('is_accredited') == 'on'
 
-        # Split full_name into first_name and last_name
-        name_parts = full_name.strip().split(' ', 1)
-        first_name = name_parts[0]
-        last_name = name_parts[1] if len(name_parts) > 1 else ''
-
-        # Generate username from email
-        username = email.split('@')[0].replace('.', '_').replace('-', '_')
-        base_username = username
-        counter = 1
-        while Staff.objects.filter(username=username).exists():
-            username = f"{base_username}_{counter}"
-            counter += 1
-
-        try:
-            with transaction.atomic():
-                # 1. Create Staff record
-                staff = Staff.objects.create_user(
-                    username=username,
-                    email=email,
-                    password='password123',
-                    first_name=first_name,
-                    last_name=last_name,
-                    role='Vet',
-                    phone=phone,
-                    status=True
-                )
-
-                print(f"✓ Staff created with ID: {staff.staff_id}")
-
-                # 2. Create Veterinary record using the same ID
-                veterinary = Veterinary.objects.create(
-                    vet_id=staff.staff_id,
-                    full_name=full_name,
-                    clinic_name=clinic_name,
-                    phone=phone,
-                    email=email,
-                    license_no=license_no,
-                    voucher=voucher,
-                    status='active',
-                    action='active'
-                )
-
-                print(f"✓ Veterinary created with ID: {veterinary.vet_id}")
-
-                messages.success(request, f'Veterinarian "{full_name}" added successfully to both tables!')
-                return redirect('vet_list')
-
-        except Exception as e:
-            # If anything fails, show the error message
-            messages.error(request, f'Error adding veterinarian: {str(e)}')
-            print(f"❌ ERROR: {str(e)}")
-            return redirect('vet_add')
+        Veterinary.objects.create(
+            full_name=request.POST.get('full_name'),
+            clinic_name=request.POST.get('clinic_name'),
+            phone=request.POST.get('phone'),
+            email=request.POST.get('email'),
+            license_no=request.POST.get('license_no'),
+            is_accredited=is_accredited
+        )
+        messages.success(request, 'Veterinarian added successfully!')
+        return redirect('vet_list')
 
     return render(request, 'animals/vet_form.html')
 
 
 @login_required
 def vet_delete(request, pk):
-    """Delete a veterinarian from BOTH Staff and Veterinary tables"""
     permission = get_user_permission(request)
     if permission not in ['full_access', 'staff_access']:
         raise PermissionDenied("Only staff can delete veterinarians.")
 
-    try:
-        with transaction.atomic():
-            # Delete from Veterinary table
-            vet_veterinary = get_object_or_404(Veterinary, vet_id=pk)
-
-            # Find and delete from Staff table
-            try:
-                vet_staff = Staff.objects.get(staff_id=pk)
-                vet_staff.delete()
-                print(f"✓ Staff record deleted for ID: {pk}")
-            except Staff.DoesNotExist:
-                print(f"⚠ No Staff record found for ID: {pk}")
-
-            vet_veterinary.delete()
-            print(f"✓ Veterinary record deleted for ID: {pk}")
-
-            messages.success(request, 'Veterinarian deleted successfully from both tables!')
-    except Exception as e:
-        messages.error(request, f'Error deleting veterinarian: {str(e)}')
-        print(f"❌ ERROR deleting vet: {str(e)}")
-
+    vet = get_object_or_404(Veterinary, vet_id=pk)
+    vet.delete()
+    messages.success(request, 'Veterinarian deleted!')
     return redirect('vet_list')
 
 

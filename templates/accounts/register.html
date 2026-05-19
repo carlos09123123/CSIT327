@@ -4,13 +4,14 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
+            <div class="card shadow">
                 <div class="card-header bg-primary text-white">
                     <h3><i class="fas fa-user-plus"></i> Register New Staff Member</h3>
                 </div>
                 <div class="card-body">
-                    <form method="post">
+                    <form method="post" id="staffRegistrationForm">
                         {% csrf_token %}
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Username *</label>
@@ -20,6 +21,9 @@
                                 <label class="form-label">Email *</label>
                                 <input type="email" name="email" class="form-control" required>
                             </div>
+                        </div>
+
+                        <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">First Name *</label>
                                 <input type="text" name="first_name" class="form-control" required>
@@ -28,13 +32,16 @@
                                 <label class="form-label">Last Name *</label>
                                 <input type="text" name="last_name" class="form-control" required>
                             </div>
+                        </div>
+
+                        <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Phone</label>
                                 <input type="text" name="phone" class="form-control">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Role *</label>
-                                <select name="role" class="form-select" required>
+                                <select name="role" class="form-select" id="roleSelect" required>
                                     <option value="Staff">Staff</option>
                                     <option value="Manager">Manager</option>
                                     <option value="Vet">Veterinarian</option>
@@ -42,6 +49,37 @@
                                     <option value="Admin">Admin</option>
                                 </select>
                             </div>
+                        </div>
+
+                        <!-- ========== VETERINARY FIELDS (shown only when Vet is selected) ========== -->
+                        <div id="veterinaryFields" style="display: none;" class="border p-3 rounded mb-3">
+                            <h5 class="mb-3"><i class="fas fa-user-md"></i> Veterinarian Details</h5>
+
+                            <div class="mb-3">
+                                <label class="form-label">Clinic Name *</label>
+                                <input type="text" name="clinic_name" class="form-control" placeholder="e.g., Animal Wellness Clinic">
+                                <small class="text-muted">Required for Veterinarians</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">License Number *</label>
+                                <input type="text" name="license_no" class="form-control" placeholder="e.g., LIC-2024-001">
+                                <small class="text-muted">Must be unique across all veterinarians</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" name="is_accredited" class="form-check-input" id="is_accredited" checked>
+                                    <label class="form-check-label" for="is_accredited">
+                                        Accredited Veterinarian
+                                    </label>
+                                    <small class="text-muted d-block">Accredited vets can perform medical procedures</small>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ======================================================================= -->
+
+                        <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Password *</label>
                                 <input type="password" name="password1" class="form-control" required>
@@ -52,6 +90,12 @@
                                 <input type="password" name="password2" class="form-control" required>
                             </div>
                         </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Note:</strong> Only administrators can register new staff members.
+                        </div>
+
                         <div class="text-end">
                             <a href="{% url 'staff_list' %}" class="btn btn-secondary">Cancel</a>
                             <button type="submit" class="btn btn-primary">Register Staff</button>
@@ -62,4 +106,34 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Show/hide veterinary fields based on role selection
+    const roleSelect = document.getElementById('roleSelect');
+    const veterinaryFields = document.getElementById('veterinaryFields');
+
+    function toggleVeterinaryFields() {
+        if (roleSelect.value === 'Vet') {
+            veterinaryFields.style.display = 'block';
+            // Make veterinary fields required
+            const clinicInput = document.querySelector('input[name="clinic_name"]');
+            const licenseInput = document.querySelector('input[name="license_no"]');
+            if (clinicInput) clinicInput.required = true;
+            if (licenseInput) licenseInput.required = true;
+        } else {
+            veterinaryFields.style.display = 'none';
+            // Remove required attribute
+            const clinicInput = document.querySelector('input[name="clinic_name"]');
+            const licenseInput = document.querySelector('input[name="license_no"]');
+            if (clinicInput) clinicInput.required = false;
+            if (licenseInput) licenseInput.required = false;
+        }
+    }
+
+    // Initial check
+    toggleVeterinaryFields();
+
+    // Add event listener
+    roleSelect.addEventListener('change', toggleVeterinaryFields);
+</script>
 {% endblock %}

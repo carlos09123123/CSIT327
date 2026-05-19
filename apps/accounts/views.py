@@ -228,6 +228,8 @@ def change_password(request):
 @login_required
 @admin_required
 def register_staff(request):
+    from apps.animals.models import Veterinary
+
     if request.method == 'POST':
         username = request.POST.get('username')
         email = request.POST.get('email')
@@ -238,6 +240,11 @@ def register_staff(request):
         password = request.POST.get('password1')
         password2 = request.POST.get('password2')
 
+        # Get veterinary fields
+        clinic_name = request.POST.get('clinic_name', '')
+        license_no = request.POST.get('license_no', '')
+        is_accredited = request.POST.get('is_accredited') == 'on'
+
         if password != password2:
             messages.error(request, 'Passwords do not match.')
         elif Staff.objects.filter(username=username).exists():
@@ -245,11 +252,49 @@ def register_staff(request):
         elif Staff.objects.filter(email=email).exists():
             messages.error(request, 'Email already exists.')
         else:
-            Staff.objects.create(
+            # Create staff account
+            staff = Staff.objects.create(
                 username=username, email=email, first_name=first_name,
                 last_name=last_name, phone=phone, role=role,
                 password=make_password(password), status=True
             )
+
+            # ========== IF ROLE IS VET, CREATE VETERINARY RECORD WITH PROVIDED DETAILS ==========
+            if role == 'Vet':
+                # Validate required fields
+                if not clinic_name:
+                    messages.error(request, 'Clinic name is required for Veterinarians.')
+                    staff.delete()
+                    return redirect('register_staff')
+                if not license_no:
+                    messages.error(request, 'License number is required for Veterinarians.')
+                    staff.delete()
+                    return redirect('register_staff')
+
+                # Check if license number already exists
+                if Veterinary.objects.filter(license_no=license_no).exists():
+                    messages.error(request, 'This license number is already registered.')
+                    staff.delete()
+                    return redirect('register_staff')
+
+                # Create veterinary record
+                veterinary = Veterinary.objects.create(
+                    full_name=f"Dr. {first_name} {last_name}",
+                    clinic_name=clinic_name,
+                    phone=phone if phone else "N/A",
+                    email=email,
+                    license_no=license_no,
+                    is_accredited=is_accredited
+                )
+
+                print(f"\n{'=' * 50}")
+                print(f"✅ VETERINARY RECORD CREATED")
+                print(f"   Veterinarian: Dr. {first_name} {last_name}")
+                print(f"   Clinic: {clinic_name}")
+                print(f"   License No: {license_no}")
+                print(f"   Accredited: {is_accredited}")
+                print(f"{'=' * 50}\n")
+            # ===================================================================================
 
             # Print staff creation to terminal
             print(f"\n{'=' * 50}")
@@ -292,6 +337,20 @@ def staff_edit(request, pk):
             staff_member.set_password(new_password)
 
         staff_member.save()
+
+        # If role changed to Vet, create veterinary record if not exists
+        if staff_member.role == 'Vet':
+            from apps.animals.models import Veterinary
+            if not Veterinary.objects.filter(email=staff_member.email).exists():
+                Veterinary.objects.create(
+                    full_name=f"Dr. {staff_member.first_name} {staff_member.last_name}",
+                    clinic_name="Pending - Please Update",
+                    phone=staff_member.phone or "N/A",
+                    email=staff_member.email,
+                    license_no=f"LIC-{staff_member.username.upper()[:10]}",
+                    is_accredited=True
+                )
+                print(f"✅ Veterinary record auto-created for {staff_member.first_name} {staff_member.last_name}")
 
         # Print staff update to terminal
         print(f"\n{'=' * 50}")

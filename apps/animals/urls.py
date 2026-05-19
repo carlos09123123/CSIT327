@@ -9,7 +9,10 @@ urlpatterns = [
     path('<int:pk>/edit/', views.pet_edit, name='pet_edit'),
     path('<int:pk>/delete/', views.pet_delete, name='pet_delete'),
 
-    # Quarantine URLs - MAKE SURE THESE EXIST
+    # Quick Add Medical Record for Vets
+    path('medical-record/add/', views.add_medical_record_quick, name='add_medical_record_quick'),
+
+    # Quarantine URLs
     path('quarantine-list/', views.quarantine_list, name='quarantine_list'),
     path('quarantine-dashboard/', views.quarantine_dashboard, name='quarantine_dashboard'),
     path('quarantine/<int:pk>/', views.quarantine_pet, name='quarantine_pet'),

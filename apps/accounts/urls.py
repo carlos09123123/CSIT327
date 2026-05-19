@@ -8,7 +8,7 @@ urlpatterns = [
     path('edit/<int:pk>/', views.staff_edit, name='staff_edit'),
     path('delete/<int:pk>/', views.staff_delete, name='staff_delete'),
 
-    # Profile Management (Staff/Admin only)
+    # Profile Management (All authenticated users)
     path('profile/', views.profile, name='profile'),
     path('profile/edit/', views.profile_edit, name='profile_edit'),
     path('change-password/', views.change_password, name='change_password'),
